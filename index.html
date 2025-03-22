@@ -13,8 +13,8 @@
       background-color: #1e1e1e;
       font-family: 'Consolas', 'Courier New', monospace;
       display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
+      align-items: flex-start; /* 上揃え */
+      justify-content: flex-start; /* 左揃え */
       height: 100vh;
       color: #d4d4d4;
     }
@@ -22,7 +22,7 @@
     #code {
       padding: 20px;
       white-space: pre-wrap;
-      font-size: 14px; /* 文字サイズを調整 */
+      font-size: 14px; /* 修正: 文字サイズを小さく調整 */
       line-height: 1.3;
     }
 
@@ -57,7 +57,7 @@
     const codeElement = document.getElementById("code");
     const messageElement = document.getElementById("message");
 
-    // 実際に表示するコード内容
+    // コード内容
     const htmlCode = `
 <!DOCTYPE html>
 <html lang="en">
@@ -84,50 +84,57 @@
   </style>
 </head>
 <body>
-  <h1>今までpdevを引っ張ってくださりありがとうございました！pdev一同成長した姿を見せられるよう頑張ります！！</h1>
+  <h1>今までpdevを引っ張ってくださりありがとうございました！</h1>
 </body>
 </html>
 `.trim();
 
     // タイピング速度設定
     let index = 0;
-    const typingSpeed = 50; // タイピング速度
+    const typingSpeed = 50; // 修正: タイピング速度を少し遅く設定
 
     // 色分け設定
-    const highlightColors = {
+    let colors = {
       tag: "#569CD6",        // タグ名
       attribute: "#9CDCFE",  // 属性名
       string: "#CE9178",     // 文字列
       brackets: "#D4D4D4",   // 括弧
-      text: "#D4D4D4"        // 通常テキストの色
+      text: "#D4D4D4"        // デフォルトテキストの色
     };
 
-    // 構文ハイライト処理
-    const htmlCodeHighlighted = htmlCode.replace(/</g, "&lt;")
-                                         .replace(/>/g, "&gt;")
-                                         .replace(/(&lt;\/?[a-zA-Z0-9]+)/g, `<span style="color: ${highlightColors.tag};">$1</span>`)
-                                         .replace(/([a-z\-]+)="[^"]*"/g, `<span style="color: ${highlightColors.attribute};">$1</span>`)
-                                         .replace(/"([^"]*)"/g, `<span style="color: ${highlightColors.string};">"$1"</span>`)
-                                         .replace(/(&gt;|&lt;)/g, `<span style="color: ${highlightColors.brackets};">$1</span>`);
+    // 構文をハイライトする関数
+    function syntaxHighlight(line) {
+      return line
+        // タグ名（<html>, </head> など）
+        .replace(/(&lt;\/?[a-zA-Z0-9]+)/g, `<span style="color: ${colors.tag};">$1</span>`)
+        // 属性名（charset, name など）
+        .replace(/([a-z\-]+)="[^"]*"/g, `<span style="color: ${colors.attribute};">$1</span>`)
+        // 文字列（"UTF-8", "width=device-width" など）
+        .replace(/"([^"]*)"/g, `<span style="color: ${colors.string};">"$1"</span>`)
+        // 括弧（<, > など）
+        .replace(/(&gt;|&lt;)/g, `<span style="color: ${colors.brackets};">$1</span>`);
+    }
 
-    // タイピングアニメーション
+    // タイピングのアニメーション
     function typeCode() {
-      codeElement.innerHTML = htmlCodeHighlighted.slice(0, index); // 段階的に表示
-      index++;
-      if (index <= htmlCodeHighlighted.length) {
-        setTimeout(typeCode, typingSpeed);
-      } else {
-        setTimeout(showMessage, 2000); // 全部表示後、2秒後にメッセージを表示
+      if (index < htmlCode.length) {
+        codeElement.innerHTML += htmlCode[index] === '\n' ? '<br>' : htmlCode[index];
+        index++;
+        if (index < htmlCode.length) {
+          setTimeout(typeCode, typingSpeed);
+        } else {
+          setTimeout(showMessage, 2000);
+        }
       }
     }
 
-    // メッセージを表示する処理
+    // メッセージをフェードインする関数
     function showMessage() {
-      codeElement.style.display = "none"; // コードを非表示
-      messageElement.style.display = "block"; // メッセージを表示
+      codeElement.style.display = "none";
+      messageElement.style.display = "block";
     }
 
-    // タイピングアニメーション開始
+    // タイピングアニメーションを開始
     typeCode();
   </script>
 </body>
