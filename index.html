@@ -7,7 +7,7 @@
     <style>
         body {
             margin: 0;
-            background-color: #1e1e1e; /* 背景色をコーディング画面風に */
+            background-color: #1e1e1e; /* コーディング画面風の背景色 */
             font-family: "Courier New", monospace; /* フォントをコーディング風に */
             overflow: hidden;
         }
@@ -35,14 +35,25 @@
             100% { opacity: 1; }
         }
 
+        .blue {
+            color: #007bff; /* 青 */
+        }
+
+        .white {
+            color: #ffffff; /* 白 */
+        }
+
+        .orange {
+            color: #ffa500; /* オレンジ */
+        }
+
         #message {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 20px; /* メッセージのフォントサイズ */
-            color: white;
-            text-align: center;
+            top: 40%;
+            left: 10%;
+            font-size: 14px; /* メッセージのフォントサイズを左上に合わせる */
+            line-height: 1.5;
+            color: #ffffff;
             opacity: 0;
             animation: fadeIn 2s ease-in-out forwards; /* メッセージ表示アニメーション */
         }
@@ -59,30 +70,51 @@
 
     <script>
         const codeLines = [
-            "const pdev = 'A team of engineers';",
-            "const growth = 'Continuous improvement';",
-            "console.log('Thank you for your leadership!');"
+            { text: "const ", class: "blue" },
+            { text: "pdev", class: "white" },
+            { text: " = ", class: "white" },
+            { text: "'A team of engineers'", class: "orange" },
+            { text: ";", class: "white" },
+            { text: "const ", class: "blue" },
+            { text: "growth", class: "white" },
+            { text: " = ", class: "white" },
+            { text: "'Continuous improvement'", class: "orange" },
+            { text: ";", class: "white" },
+            { text: "console.log", class: "blue" },
+            { text: "(", class: "white" },
+            { text: "'Thank you for your leadership!'", class: "orange" },
+            { text: ");", class: "white" }
         ];
 
-        const messageText = "今までpdevを引っ張ってくださりありがとうございました！<br>pdev一同成長した姿を見せられるよう頑張ります！";
+        const messageLines = [
+            { text: "今まで", class: "white" },
+            { text: "pdev", class: "blue" },
+            { text: "を引っ張ってくださりありがとうございました！", class: "white" },
+            { text: "pdev", class: "blue" },
+            { text: "一同成長した姿を見せられるよう頑張ります！", class: "white" }
+        ];
 
         const codeContainer = document.getElementById("code");
+        const messageContainer = document.getElementById("message");
         const cursor = document.createElement("span");
         cursor.id = "cursor";
         codeContainer.appendChild(cursor);
 
         let lineIndex = 0;
         let charIndex = 0;
+        let currentLine = "";
 
         function typeCode() {
             if (lineIndex < codeLines.length) {
-                const currentLine = codeLines[lineIndex];
-                if (charIndex < currentLine.length) {
-                    codeContainer.innerHTML += currentLine[charIndex];
+                const currentSegment = codeLines[lineIndex];
+                if (charIndex < currentSegment.text.length) {
+                    currentLine += `<span class="${currentSegment.class}">${currentSegment.text[charIndex]}</span>`;
+                    codeContainer.innerHTML = currentLine;
+                    codeContainer.appendChild(cursor); // カーソルを最新の文字の後ろに配置
                     charIndex++;
                     setTimeout(typeCode, 50); // タイピング速度を設定
                 } else {
-                    codeContainer.innerHTML += "<br>";
+                    currentLine += "<br>";
                     charIndex = 0;
                     lineIndex++;
                     setTimeout(typeCode, 200); // 次の行に進むまでの遅延
@@ -96,9 +128,12 @@
         typeCode();
 
         function showMessage() {
-            const message = document.getElementById("message");
-            message.innerHTML = messageText;
-            message.style.animation = "fadeIn 2s ease-in-out forwards";
+            let messageHTML = "";
+            messageLines.forEach(segment => {
+                messageHTML += `<span class="${segment.class}">${segment.text}</span>`;
+            });
+            messageContainer.innerHTML = messageHTML;
+            messageContainer.style.animation = "fadeIn 2s ease-in-out forwards";
         }
     </script>
 </body>
