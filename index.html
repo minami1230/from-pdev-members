@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,8 +12,8 @@
       background-color: #1e1e1e;
       font-family: 'Consolas', 'Courier New', monospace;
       display: flex;
-      align-items: flex-start; /* 上揃え */
-      justify-content: flex-start; /* 左揃え */
+      flex-direction: column;
+      justify-content: flex-start; /* 上揃え */
       height: 100vh;
       color: #d4d4d4;
     }
@@ -22,17 +21,23 @@
     #code {
       padding: 20px;
       white-space: pre-wrap;
-      font-size: 16px;
+      font-size: 14px; /* 文字サイズを調整 */
       line-height: 1.5;
+      opacity: 1; /* フェードイン/アウトに対応 */
+      animation: codeFadeOut 1s ease-in 9s forwards; /* フェードアウトアニメ付き（9秒後） */
     }
 
     #message {
       display: none;
-      text-align: center;
+      width: 100%; /* 横幅いっぱい */
+      text-align: center; /* 中央揃え */
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       animation: fadeIn 2s ease-in forwards;
       color: white;
-      font-size: 1.5rem;
-      margin-top: 20%;
+      font-size: 2rem;
     }
 
     @keyframes fadeIn {
@@ -41,6 +46,12 @@
       }
       to {
         opacity: 1;
+      }
+    }
+
+    @keyframes codeFadeOut {
+      to {
+        opacity: 0;
       }
     }
   </style>
@@ -70,7 +81,7 @@
       justify-content: center;
       background-color: #1e1e1e;
       color: white;
-      font-family: 'Consolas', 'Courier New', monospace;
+      font-family: 'Consolas', 'Courier New', monospace';
       height: 100vh;
     }
     h1 {
@@ -87,47 +98,23 @@
 
     // タイピング速度設定
     let index = 0;
-    const typingSpeed = 10; // タイピング速度をさらに速く設定
+    const typingSpeed = 50; // タイピング速度を少し速く設定
 
-    // 色分け設定
-    let colors = {
-      tag: "#569CD6",        // タグ名
-      attribute: "#9CDCFE",  // 属性名
-      string: "#CE9178",     // 文字列
-      brackets: "#D4D4D4",   // 括弧
-      text: "#D4D4D4"        // デフォルトテキストの色
-    };
-
-    // 構文をハイライトする関数
-    function syntaxHighlight(line) {
-      return line
-        // タグ名（<html>, </head> など）
-        .replace(/(&lt;\/?[a-zA-Z0-9]+)/g, `<span style="color: ${colors.tag};">$1</span>`)
-        // 属性名（charset, name など）
-        .replace(/([a-z\-]+)="[^"]*"/g, `<span style="color: ${colors.attribute};">$1</span>`)
-        // 文字列（"UTF-8", "width=device-width" など）
-        .replace(/"([^"]*)"/g, `<span style="color: ${colors.string};">"$1"</span>`)
-        // 括弧（<, > など）
-        .replace(/(&gt;|&lt;)/g, `<span style="color: ${colors.brackets};">$1</span>`);
-    }
-
-    // タイピングのアニメーション
+    // タイピングアニメーション
     function typeCode() {
       if (index < htmlCode.length) {
         codeElement.innerHTML += htmlCode[index] === '\n' ? '<br>' : htmlCode[index];
         index++;
-        if (index < htmlCode.length) {
-          setTimeout(typeCode, typingSpeed); // 指定の速度で次の文字を表示
-        } else {
-          setTimeout(showMessage, 2000); // 全てのコードが表示されてから2秒後にメッセージ表示
-        }
+        setTimeout(typeCode, typingSpeed); // 指定の速度で次の文字を表示
+      } else {
+        setTimeout(showMessage, 2000); // 全てのコードが表示されてから2秒後にメッセージ表示
       }
     }
 
     // メッセージをフェードインする関数
     function showMessage() {
-      codeElement.style.display = "none";
-      messageElement.style.display = "block";
+      codeElement.style.display = "none"; // コードを非表示
+      messageElement.style.display = "block"; // メッセージを表示
     }
 
     // タイピングアニメーションを開始
