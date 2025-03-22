@@ -59,13 +59,13 @@
 
     // コード内容
     const htmlCode = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>pdev Message of Departure</title>
-  <style>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;pdev Message of Departure&lt;/title&gt;
+  &lt;style&gt;
     body {
       margin: 0;
       padding: 0;
@@ -81,17 +81,17 @@
       font-size: 2rem;
       color: #36d4ff;
     }
-  </style>
-</head>
-<body>
-  <h1>今までpdevを引っ張ってくださりありがとうございました！pdev一同成長した姿を見せられるよう頑張ります！！</h1>
-</body>
-</html>
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;今までpdevを引っ張ってくださりありがとうございました！pdev一同成長した姿を見せられるよう頑張ります！！&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 `.trim();
 
     // タイピング速度設定
     let index = 0;
-    const typingSpeed = 70; // 修正: タイピング速度を少し遅く設定
+    const typingSpeed = 50; // タイピング速度
 
     // 色分け設定
     let colors = {
@@ -99,36 +99,34 @@
       attribute: "#9CDCFE",  // 属性名
       string: "#CE9178",     // 文字列
       brackets: "#D4D4D4",   // 括弧
-      text: "#D4D4D4"        // デフォルトテキストの色
+      text: "#D4D4D4"        // 通常テキストの色
     };
 
     // 構文をハイライトする関数
-    function syntaxHighlight(html) {
-      return html
-        // タグ名（<html>, </head>, </body>など）
+    function syntaxHighlight(line) {
+      return line
+        // タグ名（<html>, </head>など）
         .replace(/(&lt;\/?[a-zA-Z0-9]+)/g, `<span style="color: ${colors.tag};">$1</span>`)
-        // 属性名（charset, nameなど）
+        // 属性名（charset, name など）
         .replace(/([a-z\-]+)="[^"]*"/g, `<span style="color: ${colors.attribute};">$1</span>`)
-        // 文字列（"UTF-8", "width=device-width"など）
+        // 文字列（"UTF-8", "width=device-width" など）
         .replace(/"([^"]*)"/g, `<span style="color: ${colors.string};">"$1"</span>`)
-        // 括弧（<, >など）
+        // 括弧（<, >）
         .replace(/(&gt;|&lt;)/g, `<span style="color: ${colors.brackets};">$1</span>`);
     }
 
+    // HTMLの構文をハイライト
+    const highlightedCode = syntaxHighlight(htmlCode);
+
     // タイピングアニメーション
     function typeCode() {
-      if (index < htmlCode.length) {
-        const char = htmlCode[index]; // 現在の文字
-        codeElement.innerHTML += char === '\n' ? '<br>' : char;
-
-        // 次の行を構文ハイライトして反映
-        codeElement.innerHTML = syntaxHighlight(codeElement.innerHTML);
+      if (index < highlightedCode.length) {
+        // 次の文字を追加
+        codeElement.innerHTML += highlightedCode[index] === '\n' ? '<br>' : highlightedCode[index];
         index++;
-        if (index < htmlCode.length) {
-          setTimeout(typeCode, typingSpeed);
-        } else {
-          setTimeout(showMessage, 2000);
-        }
+        setTimeout(typeCode, typingSpeed);
+      } else {
+        setTimeout(showMessage, 2000); // 全部表示後、2秒後にメッセージ表示
       }
     }
 
