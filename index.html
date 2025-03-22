@@ -77,13 +77,24 @@
 <body>
     <div id="code"></div>
     <div id="fireworks-container"></div>
-    <div id="message">今までpdevを引っ張ってくださりありがとうございました！<br>pdev一同成長した姿を見せられるよう頑張ります！</br></div>
+    <div id="message">今までpdevを引っ張ってくださりありがとうございました！<br>pdev一同成長した姿を見せられるよう頑張ります！</div>
 
     <script>
         const codeLines = [
-            "<span class='blue'>const</span> <span class='white'>pdev</span> <span class='white'>=</span> <span class='orange'>'A team of engineers'</span>;",
-            "<span class='blue'>const</span> <span class='white'>growth</span> <span class='white'>=</span> <span class='orange'>'Continuous improvement'</span>;",
-            "<span class='white'>console.log</span><span class='white'>(</span><span class='orange'>'Thank you for your leadership!'</span><span class='white'>)</span>;"
+            { text: "const ", class: "blue" },
+            { text: "pdev", class: "white" },
+            { text: " = ", class: "white" },
+            { text: "'A team of engineers'", class: "orange" },
+            { text: ";", class: "white" },
+            { text: "const ", class: "blue" },
+            { text: "growth", class: "white" },
+            { text: " = ", class: "white" },
+            { text: "'Continuous improvement'", class: "orange" },
+            { text: ";", class: "white" },
+            { text: "console.log", class: "white" },
+            { text: "(", class: "white" },
+            { text: "'Thank you for your leadership!'", class: "orange" },
+            { text: ");", class: "white" }
         ];
 
         const codeContainer = document.getElementById("code");
@@ -92,16 +103,26 @@
         codeContainer.appendChild(cursor);
 
         let index = 0;
+        let charIndex = 0;
+        let currentLine = "";
 
         function typeCode() {
             if (index < codeLines.length) {
-                const line = document.createElement("div");
-                line.innerHTML = codeLines[index]; // innerHTMLで色付き文字を反映
-                codeContainer.insertBefore(line, cursor);
-                index++;
-                setTimeout(typeCode, 1000); // 次の行を表示するまでの遅延
+                const currentSegment = codeLines[index];
+                if (charIndex < currentSegment.text.length) {
+                    currentLine += `<span class="${currentSegment.class}">${currentSegment.text[charIndex]}</span>`;
+                    codeContainer.innerHTML = currentLine;
+                    codeContainer.appendChild(cursor);
+                    charIndex++;
+                    setTimeout(typeCode, 100); // 文字ごとに表示
+                } else {
+                    currentLine += "<br>";
+                    charIndex = 0;
+                    index++;
+                    setTimeout(typeCode, 500); // 次の行に進むまでの遅延
+                }
             } else {
-                cursor.style.display = "none"; // タイピングが終了したらカーソルを消す
+                cursor.style.display = "none"; // タイピング終了後にカーソルを消す
                 launchFireworks(); // 花火アニメーションを開始
             }
         }
