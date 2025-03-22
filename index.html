@@ -5,24 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>pdev Farewell Message</title>
   <style>
-    /* VS Code風の背景とコードスタイル */
     body {
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background-color: #1e1e1e; /* ダークブルーグレー背景 */
+      background-color: #1e1e1e;
       font-family: 'Consolas', 'Courier New', monospace;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      align-items: flex-start; /* 上揃え */
+      justify-content: flex-start; /* 左揃え */
       height: 100vh;
-      color: #d4d4d4; /* VS Code風の文字色 */
+      color: #d4d4d4;
     }
 
     #code {
-      position: absolute;
-      top: 0%; /* 左上に開始 */
-      left: 2%;
+      padding: 20px;
       white-space: pre-wrap;
       font-size: 16px;
       line-height: 1.5;
@@ -39,6 +36,7 @@
       animation: fadeIn 2s ease-in forwards;
       color: white;
       font-size: 1.5rem;
+      margin-top: 20%;
     }
 
     @keyframes fadeIn {
@@ -52,16 +50,13 @@
   </style>
 </head>
 <body>
-  <!-- タイピング風にHTMLコードを表示する部分 -->
   <div id="code"></div>
-  <!-- 最後に表示するメッセージ -->
   <div id="message">今までpdevを引っ張ってくださりありがとうございました！<br>pdev一同成長した姿を見せられるよう頑張ります！</div>
 
   <script>
     const codeElement = document.getElementById("code");
     const messageElement = document.getElementById("message");
 
-    // 最後のHTMLメッセージを作成するコード内容
     const htmlCode = `
 <!DOCTYPE html>
 <html lang="en">
@@ -94,35 +89,38 @@
 `.trim();
 
     let index = 0;
-    const typingSpeed = 50; // タイピング速度（遅めに設定）
+    const typingSpeed = 10; // タイピング速度を遅く
 
-    // 関数: タイピングアニメーション
+    let colors = {
+      tag: "#569CD6",        // タグ名
+      attribute: "#9CDCFE",  // 属性名
+      string: "#CE9178",     // 文字列
+      brackets: "#D4D4D4"    // 括弧
+    };
+
+    function syntaxHighlight(line) {
+      return line
+        .replace(/(&lt;\/?[a-zA-Z0-9]+)/g, `<span style="color: ${colors.tag};">$1</span>`) // タグ名
+        .replace(/([a-z\-]+)="[^"]*"/g, `<span style="color: ${colors.attribute};">$1</span>`) // 属性名
+        .replace(/"([^"]*)"/g, `<span style="color: ${colors.string};">"$1"</span>`) // 文字列
+        .replace(/(&gt;|&lt;)/g, `<span style="color: ${colors.brackets};">$1</span>`); // 括弧
+    }
+
     function typeCode() {
       if (index < htmlCode.length) {
         codeElement.innerHTML += htmlCode[index] === '\n' ? '<br>' : htmlCode[index];
         index++;
-        if (index === Math.floor(htmlCode.length / 2)) {
-          // コードの半分を表示した時点でタイピング停止、フェードアウト
-          setTimeout(fadeOutCode, 1000);
-        } else {
-          setTimeout(typeCode, typingSpeed);
-        }
+        setTimeout(typeCode, typingSpeed);
+      } else {
+        setTimeout(showMessage, 2000); // コード完了後メッセージ表示
       }
     }
 
-    // 関数: コーディング文字のフェードアウト
-    function fadeOutCode() {
-      codeElement.classList.add("hidden");
-      setTimeout(showMessage, 2000); // フェードアウト完了後2秒後にメッセージ表示
-    }
-
-    // 関数: メッセージをフェードイン
     function showMessage() {
       codeElement.style.display = "none";
       messageElement.style.display = "block";
     }
 
-    // タイピングを開始
     typeCode();
   </script>
 </body>
