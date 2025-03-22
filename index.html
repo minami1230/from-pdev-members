@@ -91,7 +91,7 @@
 
     // タイピング速度設定
     let index = 0;
-    const typingSpeed = 60; // 修正: タイピング速度を少し遅く設定
+    const typingSpeed = 70; // 修正: タイピング速度を少し遅く設定
 
     // 色分け設定
     let colors = {
@@ -103,22 +103,26 @@
     };
 
     // 構文をハイライトする関数
-    function syntaxHighlight(line) {
-      return line
-        // タグ名（<html>, </head> など）
+    function syntaxHighlight(html) {
+      return html
+        // タグ名（<html>, </head>, </body>など）
         .replace(/(&lt;\/?[a-zA-Z0-9]+)/g, `<span style="color: ${colors.tag};">$1</span>`)
-        // 属性名（charset, name など）
+        // 属性名（charset, nameなど）
         .replace(/([a-z\-]+)="[^"]*"/g, `<span style="color: ${colors.attribute};">$1</span>`)
-        // 文字列（"UTF-8", "width=device-width" など）
+        // 文字列（"UTF-8", "width=device-width"など）
         .replace(/"([^"]*)"/g, `<span style="color: ${colors.string};">"$1"</span>`)
-        // 括弧（<, > など）
+        // 括弧（<, >など）
         .replace(/(&gt;|&lt;)/g, `<span style="color: ${colors.brackets};">$1</span>`);
     }
 
-    // タイピングのアニメーション
+    // タイピングアニメーション
     function typeCode() {
       if (index < htmlCode.length) {
-        codeElement.innerHTML += htmlCode[index] === '\n' ? '<br>' : htmlCode[index];
+        const char = htmlCode[index]; // 現在の文字
+        codeElement.innerHTML += char === '\n' ? '<br>' : char;
+
+        // 次の行を構文ハイライトして反映
+        codeElement.innerHTML = syntaxHighlight(codeElement.innerHTML);
         index++;
         if (index < htmlCode.length) {
           setTimeout(typeCode, typingSpeed);
