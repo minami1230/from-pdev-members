@@ -12,8 +12,8 @@
       background-color: #1e1e1e;
       font-family: 'Consolas', 'Courier New', monospace;
       display: flex;
-      flex-direction: column;
-      justify-content: flex-start; /* 上揃え */
+      align-items: flex-start;
+      justify-content: flex-start;
       height: 100vh;
       color: #d4d4d4;
     }
@@ -21,37 +21,39 @@
     #code {
       padding: 20px;
       white-space: pre-wrap;
-      font-size: 14px; /* 文字サイズを調整 */
+      font-size: 14px; /* 文字サイズ設定 */
       line-height: 1.5;
-      opacity: 1; /* フェードイン/アウトに対応 */
-      animation: codeFadeOut 1s ease-in 9s forwards; /* フェードアウトアニメ付き（9秒後） */
+      opacity: 1;
+      animation: fadeOut 2s ease-in forwards; /* フェードアウトアニメーション */
     }
 
     #message {
       display: none;
-      width: 100%; /* 横幅いっぱい */
-      text-align: center; /* 中央揃え */
+      text-align: center;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      animation: fadeIn 2s ease-in forwards;
+      animation: fadeIn 2s ease-in forwards; /* フェードイン */
       color: white;
       font-size: 2rem;
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
+    @keyframes fadeOut {
+      0% {
         opacity: 1;
+      }
+      100% {
+        opacity: 0;
       }
     }
 
-    @keyframes codeFadeOut {
-      to {
+    @keyframes fadeIn {
+      0% {
         opacity: 0;
+      }
+      100% {
+        opacity: 1;
       }
     }
   </style>
@@ -64,7 +66,7 @@
     const codeElement = document.getElementById("code");
     const messageElement = document.getElementById("message");
 
-    // コード内容
+    // 表示するコードの内容
     const htmlCode = `
 <!DOCTYPE html>
 <html lang="en">
@@ -98,26 +100,29 @@
 
     // タイピング速度設定
     let index = 0;
-    const typingSpeed = 50; // タイピング速度を少し速く設定
+    const typingSpeed = 500; // 修正: タイピングスピードを遅く（0.5秒）
 
     // タイピングアニメーション
     function typeCode() {
       if (index < htmlCode.length) {
         codeElement.innerHTML += htmlCode[index] === '\n' ? '<br>' : htmlCode[index];
         index++;
-        setTimeout(typeCode, typingSpeed); // 指定の速度で次の文字を表示
+        setTimeout(typeCode, typingSpeed); // 指定スピードで次の文字を表示
+        if (index === htmlCode.length - 20) { // タイピング終了の 2 秒前からフェードアウト開始
+          codeElement.style.animation = "fadeOut 2s ease-in forwards";
+        }
       } else {
-        setTimeout(showMessage, 2000); // 全てのコードが表示されてから2秒後にメッセージ表示
+        showMessage(); // タイピング終了後メッセージ表示
       }
     }
 
-    // メッセージをフェードインする関数
+    // メッセージを表示する関数
     function showMessage() {
       codeElement.style.display = "none"; // コードを非表示
-      messageElement.style.display = "block"; // メッセージを表示
+      messageElement.style.display = "block"; // メッセージを中央に表示
     }
 
-    // タイピングアニメーションを開始
+    // タイピングアニメーション開始
     typeCode();
   </script>
 </body>
