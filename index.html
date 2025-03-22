@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farewell Animation</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            font-family: "Courier New", monospace;
+            overflow: hidden;
+        }
+
+        #code {
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            font-size: 20px;
+        }
+
+        #message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            color: #00ff00;
+            opacity: 0;
+            animation: fadeInMessage 2s ease-in-out 5s forwards;
+        }
+
+        @keyframes fadeInMessage {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="code"></div>
+    <div id="message">今までpdevを引っ張ってくださり、本当にありがとうございました!　pdev一同成長した姿を見せられるよう頑張ります！</div>
+
+    <script>
+        const codeLines = [
+            "const pdev = 'A team of engineers';",
+            "const growth = 'Continuous improvement';",
+            "console.log('Thank you for your leadership!');"
+        ];
+
+        const codeContainer = document.getElementById("code");
+        let index = 0;
+
+        function typeCode() {
+            if (index < codeLines.length) {
+                const line = document.createElement("div");
+                line.textContent = codeLines[index];
+                codeContainer.appendChild(line);
+                index++;
+                setTimeout(typeCode, 1000);
+            }
+        }
+
+        typeCode();
+    </script>
+</body>
+</html>
