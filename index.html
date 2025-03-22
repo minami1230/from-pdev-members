@@ -12,144 +12,101 @@
       overflow: hidden;
       background-color: #1e1e1e; /* ダークブルーグレー背景 */
       font-family: 'Consolas', 'Courier New', monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: #d4d4d4; /* VS Code風の文字色 */
+      height: 100vh;
     }
 
-    canvas {
-      display: block;
+    #code {
+      white-space: pre-wrap;
+      font-size: 16px;
+      line-height: 1.5;
     }
 
-    /* 感謝メッセージをフェードイン */
-    .message {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
+    #message {
       display: none;
+      text-align: center;
       animation: fadeIn 2s ease-in forwards;
-      font-size: 1.5rem;
       color: white;
+      font-size: 1.5rem;
     }
 
     @keyframes fadeIn {
-      0% {
+      from {
         opacity: 0;
       }
-      100% {
+      to {
         opacity: 1;
       }
     }
   </style>
 </head>
 <body>
-  <!-- コーディングアニメーションを表示するエリア -->
-  <canvas id="codeCanvas"></canvas>
-
-  <!-- 感謝のメッセージ -->
-  <div class="message" id="message">
-    今までpdevを引っ張ってくださりありがとうございました！<br>
-    pdev一同、成長した姿を見せられるよう頑張ります！
-  </div>
+  <div id="code"></div>
+  <div id="message">今までpdevを引っ張っていただきありがとうございました！<br>pdev一同成長した姿を見せられるよう頑張ります！</div>
 
   <script>
-    const canvas = document.getElementById("codeCanvas");
-    const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const codeElement = document.getElementById("code");
+    const messageElement = document.getElementById("message");
 
-    // VS Code風の色設定
-    const colors = {
-      keyword: '#569cd6', // キーワード（const, function）
-      string: '#ce9178', // 文字列
-      variable: '#9cdcfe', // 変数名
-      brackets: '#d4d4d4', // 括弧
-    };
-
-    // タイピング風のコード
+    // コード内容を配列に設定（VS Code風の構文で記述）
     const codeLines = [
-      `const pdev = {`,
-      `  name: "pdev",`,
-      `  members: ["Leader", "Engineer1", "Engineer2", "Engineer3", "Engineer4"],`,
-      `  vision: () => "共に成長し続ける",`,
-      `  gratitude: () => "今までのご指導への感謝を込めて",`,
-      `  future: () => "絆と挑戦は永遠です",`,
-      `};`,
-      `function eternity(message) {`,
-      `  while (true) {`,
-      `    console.log(\`\${pdev.name}: \${message}\`);`,
-      `  }`,
-      `}`,
-      `eternity("絆と挑戦は永遠です。");`,
+      '<!DOCTYPE html>',
+      '<html lang="en">',
+      '<head>',
+      '  <meta charset="UTF-8">',
+      '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+      '  <title>pdev Farewell Message</title>',
+      '  <style>',
+      '    body {',
+      '      margin: 0;',
+      '      padding: 0;',
+      '      display: flex;',
+      '      align-items: center;',
+      '      justify-content: center;',
+      '      background-color: #1e1e1e;',
+      '      color: white;',
+      '      font-family: "Consolas", "Courier New", monospace;',
+      '      height: 100vh;',
+      '    }',
+      '    h1 {',
+      '      font-size: 2rem;',
+      '      color: #36d4ff;',
+      '    }',
+      '  </style>',
+      '</head>',
+      '<body>',
+      '  <h1>今までpdevを引っ張っていただきありがとうございました！</h1>',
+      '</body>',
+      '</html>',
     ];
 
     let currentLine = 0;
-    let typingIndex = 0;
-    let delay = 100;
-    let fadeOutDelay = 1500; // 文字が消えるまでの時間
-    let fadeMessageDisplayed = false;
-
-    // コードを1行ずつ描画する関数
-    function drawCode() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.font = "18px 'Consolas', monospace";
-
-      // 既存の行を表示
-      for (let i = 0; i < currentLine; i++) {
-        drawSyntaxHighlightedLine(codeLines[i], 50, 50 + i * 28);
-      }
-
-      // 現在の行をタイピング風に表示
+  
+    // タイピング風アニメーションの関数
+    function typeCode() {
       if (currentLine < codeLines.length) {
-        const textToDraw = codeLines[currentLine].slice(0, typingIndex + 1);
-        drawSyntaxHighlightedLine(textToDraw, 50, 50 + currentLine * 28);
-
-        if (typingIndex < codeLines[currentLine].length) {
-          typingIndex++;
-        } else {
-          typingIndex = 0;
-          currentLine++;
-        }
+        codeElement.innerHTML += codeLines[currentLine] + "\n";
+        currentLine++;
       } else {
-        // すべての行が表示された後、文字を消しフェードインメッセージを表示
-        setTimeout(fadeOutCode, fadeOutDelay);
+        // すべてのコードが描画された後、画面をフェードアウトして新しい内容を表示
+        setTimeout(showMessage, 1000);
       }
     }
 
-    // コードを構文ハイライト付きで描画する関数
-    function drawSyntaxHighlightedLine(line, x, y) {
-      const tokens = line.split(/(\s+|["'{}();,.]+)/); // 空白や記号で分割
-      let xOffset = x;
-
-      tokens.forEach(token => {
-        let color = colors.brackets; // デフォルト色
-        if (/^(const|function)$/.test(token)) color = colors.keyword; // キーワード
-        else if (/^["'].*["']$/.test(token)) color = colors.string; // 文字列
-        else if (/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(token)) color = colors.variable; // 変数名
-
-        ctx.fillStyle = color;
-        ctx.fillText(token, xOffset, y);
-        xOffset += ctx.measureText(token).width; // 描画位置を更新
-      });
+    // メッセージを表示する関数
+    function showMessage() {
+      codeElement.style.display = "none";
+      messageElement.style.display = "block";
     }
 
-    // コードをフェードアウトさせる関数
-    function fadeOutCode() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      if (!fadeMessageDisplayed) {
-        fadeMessageDisplayed = true;
+    // タイピング速度（高速化）
+    const typingSpeed = 100; // 毎行表示速度（ms）
 
-        const messageDiv = document.getElementById("message");
-        messageDiv.style.display = "block"; // メッセージを表示
-      }
-    }
-
-    // コードアニメーションを開始
-    function startAnimation() {
-      setInterval(drawCode, delay);
-    }
-
-    startAnimation();
+    setInterval(typeCode, typingSpeed);
   </script>
 </body>
+</html>
 </html>
