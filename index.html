@@ -15,7 +15,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #d4d4d4; /* VS Code風の文字色 */
       height: 100vh;
     }
 
@@ -23,6 +22,11 @@
       white-space: pre-wrap;
       font-size: 16px;
       line-height: 1.5;
+    }
+
+    .hidden {
+      transition: opacity 2s ease-out;
+      opacity: 0;
     }
 
     #message {
@@ -34,10 +38,10 @@
     }
 
     @keyframes fadeIn {
-      from {
+      0% {
         opacity: 0;
       }
-      to {
+      100% {
         opacity: 1;
       }
     }
@@ -45,7 +49,7 @@
 </head>
 <body>
   <div id="code"></div>
-  <div id="message">今までpdevを引っ張っていただきありがとうございました！<br>pdev一同成長した姿を見せられるよう頑張ります！</div>
+  <div id="message">今までpdevを引っ張ってくださりありがとうございました！<br>pdev一同成長した姿を見せられるよう頑張ります！</div>
 
   <script>
     const codeElement = document.getElementById("code");
@@ -78,35 +82,51 @@
       '  </style>',
       '</head>',
       '<body>',
-      '  <h1>今までpdevを引っ張っていただきありがとうございました！</h1>',
+      '  <h1>今までpdevを引っ張ってくださりありがとうございました！</h1>',
       '</body>',
       '</html>',
     ];
 
     let currentLine = 0;
-  
-    // タイピング風アニメーションの関数
+    let delay = 100; // タイピング速度
+    let colors = {
+      tag: "#569CD6", // タグの色
+      attribute: "#9CDCFE", // 属性名の色
+      string: "#CE9178", // 文字列の色
+      brackets: "#D4D4D4", // 括弧の色
+    };
+
+    // コード表示
     function typeCode() {
       if (currentLine < codeLines.length) {
-        codeElement.innerHTML += codeLines[currentLine] + "\n";
+        codeElement.innerHTML += syntaxHighlight(codeLines[currentLine]) + "\n";
         currentLine++;
       } else {
-        // すべてのコードが描画された後、画面をフェードアウトして新しい内容を表示
-        setTimeout(showMessage, 1000);
+        setTimeout(fadeOutCode, 1000); // 最後の行が表示された後フェードアウト
       }
     }
 
-    // メッセージを表示する関数
+    function syntaxHighlight(line) {
+      return line
+        .replace(/(&lt;\/?[a-zA-Z0-9]+)/g, `<span style="color: ${colors.tag};">$1</span>`)
+        .replace(/([a-z\-]+)="[^"]*"/g, `<span style="color: ${colors.attribute};">$1</span>`)
+        .replace(/"([^"]*)"/g, `<span style="color: ${colors.string};">"$1"</span>`)
+        .replace(/(&gt;|&lt;)/g, `<span style="color: ${colors.brackets};">$1</span>`);
+    }
+
+    // コーディング文字をフェードアウト
+    function fadeOutCode() {
+      codeElement.classList.add("hidden");
+      setTimeout(showMessage, 2000); // メッセージ表示の前に2秒待つ
+    }
+
+    // メッセージをフェードイン
     function showMessage() {
       codeElement.style.display = "none";
       messageElement.style.display = "block";
     }
 
-    // タイピング速度（高速化）
-    const typingSpeed = 100; // 毎行表示速度（ms）
-
-    setInterval(typeCode, typingSpeed);
+    setInterval(typeCode, delay); // タイピング開始
   </script>
 </body>
-</html>
 </html>
