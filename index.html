@@ -44,7 +44,7 @@
             color: white;
             text-align: center;
             opacity: 0;
-            animation: fadeIn 2s ease-in-out 5s forwards;
+            animation: fadeIn 2s ease-in-out forwards;
         }
 
         @keyframes fadeIn {
@@ -53,7 +53,6 @@
         }
 
         #outer {
-            background-color: black;
             position: absolute;
             top: 0;
             left: 0;
@@ -68,7 +67,7 @@
         #line {
             stroke-width: 3px;
             stroke-dashoffset: 50%;
-            stroke-dasharray: 5% 20%; /* 線を半分の長さに変更 */
+            stroke-dasharray: 5% 20%; /* 線の長さを短縮 */
             animation: hanabi 2.5s ease-out;
         }
 
@@ -108,7 +107,6 @@
     <div id="message">今までpdevを引っ張ってくださりありがとうございました！<br>pdev一同成長した姿を見せられるよう頑張ります！</div>
 
     <script>
-        // タイピングアニメーションの内容
         const codeLines = [
             "const pdev = 'A team of engineers';",
             "const growth = 'Continuous improvement';",
@@ -144,13 +142,11 @@
 
         typeCode();
 
-        // 花火アニメーションの処理
         const outer = document.getElementById("outer");
         const inner = document.getElementById("inner");
 
         const colors = ["red", "blue", "yellow", "green", "orange", "purple"];
-        let timerId;
-        let count = 0;
+        let fireworkCount = 0;
 
         function fireworks() {
             let clone = inner.cloneNode(true);
@@ -160,11 +156,11 @@
                 clone.remove();
             });
 
-            // ランダムな属性値を生成
-            let horizontal = String(Math.random() * 100 - 25) + "%";
-            let vertical = String(Math.random() * 100 - 50) + "%";
+            // 花火の属性値を設定
+            let horizontal = fireworkCount === 2 ? "50%" : String(Math.random() * 100 - 25) + "%"; // 最後の花火は中央
+            let vertical = fireworkCount === 2 ? "50%" : String(Math.random() * 100 - 50) + "%"; // 最後の花火は中央
             let randomColor = colors[Math.floor(Math.random() * colors.length)];
-            let size = String(Math.random() * 20 + 30) + "%";
+            let size = fireworkCount === 2 ? "50%" : String(Math.random() * 20 + 30) + "%"; // 最後の花火は大きく
 
             // 属性をセット
             clone.setAttribute("x", horizontal);
@@ -176,16 +172,15 @@
             // outerに追加
             outer.appendChild(clone);
 
-            // カウンタをインクリメントし、30発で終了
-            count++;
-            if (count === 30) {
-                clearInterval(timerId);
-                showMessage(); // 花火終了後メッセージを表示
+            // 花火のカウントを管理
+            fireworkCount++;
+            if (fireworkCount === 3) {
+                setTimeout(showMessage, 1000); // 最後の花火の後にメッセージを表示
             }
         }
 
-        // 花火を500ミリ秒ごとに繰り返す
-        timerId = setInterval(fireworks, 500);
+        // 花火を3発限定で表示
+        setInterval(fireworks, 1000);
 
         // メッセージを表示する関数
         function showMessage() {
