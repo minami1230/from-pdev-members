@@ -8,7 +8,6 @@
         body {
             margin: 0;
             background-color: #1e1e1e;
-            color: #d4d4d4;
             font-family: "Courier New", monospace;
             overflow: hidden;
         }
@@ -17,26 +16,15 @@
             position: absolute;
             top: 20%;
             left: 10%;
-            font-size: 12px; /* より小さい文字サイズ */
+            font-size: 14px; /* 左上の文字のサイズ */
             line-height: 1.5;
-        }
-
-        .blue {
-            color: #007bff; /* 青 */
-        }
-
-        .white {
-            color: #ffffff; /* 白 */
-        }
-
-        .orange {
-            color: #ffa500; /* オレンジ */
+            color: #ffffff;
         }
 
         #cursor {
             display: inline-block;
             width: 10px;
-            height: 12px;
+            height: 14px;
             background-color: #ffffff;
             animation: blink 1s infinite;
         }
@@ -52,11 +40,11 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 20px; /* 添付1枚目と同じフォントサイズ */
+            font-size: 20px;
             color: white;
             text-align: center;
             opacity: 0;
-            animation: fadeIn 2s ease-in-out 3s forwards;
+            animation: fadeIn 2s ease-in-out 5s forwards;
         }
 
         @keyframes fadeIn {
@@ -64,37 +52,67 @@
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        #fireworks-container {
+        #outer {
+            background-color: black;
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
+        }
+
+        #inner {
+            overflow: visible;
+        }
+
+        #line {
+            stroke-width: 3px;
+            stroke-dashoffset: 50%;
+            stroke-dasharray: 5% 20%; /* 線を半分の長さに変更 */
+            animation: hanabi 2.5s ease-out;
+        }
+
+        @keyframes hanabi {
+            60% { transform: translateY(0%); }
+            90% { opacity: 1; }
+            to { stroke-dasharray: 50%; transform: translateY(20%); opacity: 0; }
         }
     </style>
 </head>
 <body>
     <div id="code"></div>
-    <div id="fireworks-container"></div>
+    <svg id="outer" viewBox="0 0 400 300">
+        <svg id="inner" viewBox="0 0 300 300" x="-100%">
+            <g id="line">
+                <line x1="50%" y1="50%" x2="75%" y2="50%"></line>
+                <line x1="50%" y1="50%" x2="73.49%" y2="58.55%"></line>
+                <line x1="50%" y1="50%" x2="69.15%" y2="66.07%"></line>
+                <line x1="50%" y1="50%" x2="62.50%" y2="71.65%"></line>
+                <line x1="50%" y1="50%" x2="54.34%" y2="74.62%"></line>
+                <line x1="50%" y1="50%" x2="45.66%" y2="74.62%"></line>
+                <line x1="50%" y1="50%" x2="37.50%" y2="71.65%"></line>
+                <line x1="50%" y1="50%" x2="30.85%" y2="66.07%"></line>
+                <line x1="50%" y1="50%" x2="26.51%" y2="58.55%"></line>
+                <line x1="50%" y1="50%" x2="25%" y2="50%"></line>
+                <line x1="50%" y1="50%" x2="26.51%" y2="41.45%"></line>
+                <line x1="50%" y1="50%" x2="30.85%" y2="33.93%"></line>
+                <line x1="50%" y1="50%" x2="37.50%" y2="28.35%"></line>
+                <line x1="50%" y1="50%" x2="45.66%" y2="25.38%"></line>
+                <line x1="50%" y1="50%" x2="54.34%" y2="25.38%"></line>
+                <line x1="50%" y1="50%" x2="62.50%" y2="28.35%"></line>
+                <line x1="50%" y1="50%" x2="69.15%" y2="33.93%"></line>
+                <line x1="50%" y1="50%" x2="73.49%" y2="41.45%"></line>
+            </g>
+        </svg>
+    </svg>
     <div id="message">今までpdevを引っ張ってくださりありがとうございました！<br>pdev一同成長した姿を見せられるよう頑張ります！</div>
 
     <script>
+        // タイピングアニメーションの内容
         const codeLines = [
-            { text: "const ", class: "blue" },
-            { text: "pdev", class: "white" },
-            { text: " = ", class: "white" },
-            { text: "'A team of engineers'", class: "orange" },
-            { text: ";", class: "white" },
-            { text: "const ", class: "blue" },
-            { text: "growth", class: "white" },
-            { text: " = ", class: "white" },
-            { text: "'Continuous improvement'", class: "orange" },
-            { text: ";", class: "white" },
-            { text: "console.log", class: "white" },
-            { text: "(", class: "white" },
-            { text: "'Thank you for your leadership!'", class: "orange" },
-            { text: ");", class: "white" }
+            "const pdev = 'A team of engineers';",
+            "const growth = 'Continuous improvement';",
+            "console.log('Thank you for your leadership!');"
         ];
 
         const codeContainer = document.getElementById("code");
@@ -102,51 +120,77 @@
         cursor.id = "cursor";
         codeContainer.appendChild(cursor);
 
-        let index = 0;
+        let lineIndex = 0;
         let charIndex = 0;
-        let currentLine = "";
 
         function typeCode() {
-            if (index < codeLines.length) {
-                const currentSegment = codeLines[index];
-                if (charIndex < currentSegment.text.length) {
-                    currentLine += `<span class="${currentSegment.class}">${currentSegment.text[charIndex]}</span>`;
-                    codeContainer.innerHTML = currentLine;
-                    codeContainer.appendChild(cursor);
+            if (lineIndex < codeLines.length) {
+                const currentLine = codeLines[lineIndex];
+                if (charIndex < currentLine.length) {
+                    codeContainer.innerHTML += currentLine[charIndex];
                     charIndex++;
-                    setTimeout(typeCode, 100); // 文字ごとに表示
+                    setTimeout(typeCode, 50); // タイピング速度を速く設定
                 } else {
-                    currentLine += "<br>";
+                    codeContainer.innerHTML += "<br>";
                     charIndex = 0;
-                    index++;
-                    setTimeout(typeCode, 500); // 次の行に進むまでの遅延
+                    lineIndex++;
+                    setTimeout(typeCode, 200); // 次の行に進むまでの遅延
                 }
             } else {
-                cursor.style.display = "none"; // タイピング終了後にカーソルを消す
+                cursor.style.display = "none"; // タイピング終了後カーソルを消す
                 launchFireworks(); // 花火アニメーションを開始
             }
         }
 
         typeCode();
 
-        function launchFireworks() {
-            const container = document.getElementById("fireworks-container");
-            for (let i = 0; i < 10; i++) {
-                const firework = document.createElement("div");
-                firework.style.position = "absolute";
-                firework.style.width = "5px";
-                firework.style.height = "5px";
-                firework.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`; // ランダムな色
-                firework.style.borderRadius = "50%";
-                firework.style.top = `${Math.random() * window.innerHeight}px`;
-                firework.style.left = `${Math.random() * window.innerWidth}px`;
-                firework.style.animation = `explode 1s ease-in-out ${i * 0.2}s forwards`;
-                container.appendChild(firework);
+        // 花火アニメーションの処理
+        const outer = document.getElementById("outer");
+        const inner = document.getElementById("inner");
 
-                firework.addEventListener("animationend", () => {
-                    container.removeChild(firework);
-                });
+        const colors = ["red", "blue", "yellow", "green", "orange", "purple"];
+        let timerId;
+        let count = 0;
+
+        function fireworks() {
+            let clone = inner.cloneNode(true);
+
+            // アニメーション終了時に削除するよう設定
+            clone.children[0].addEventListener("animationend", function () {
+                clone.remove();
+            });
+
+            // ランダムな属性値を生成
+            let horizontal = String(Math.random() * 100 - 25) + "%";
+            let vertical = String(Math.random() * 100 - 50) + "%";
+            let randomColor = colors[Math.floor(Math.random() * colors.length)];
+            let size = String(Math.random() * 20 + 30) + "%";
+
+            // 属性をセット
+            clone.setAttribute("x", horizontal);
+            clone.setAttribute("y", vertical);
+            clone.setAttribute("width", "auto");
+            clone.setAttribute("height", size);
+            clone.children[0].style.stroke = randomColor;
+
+            // outerに追加
+            outer.appendChild(clone);
+
+            // カウンタをインクリメントし、30発で終了
+            count++;
+            if (count === 30) {
+                clearInterval(timerId);
+                showMessage(); // 花火終了後メッセージを表示
             }
+        }
+
+        // 花火を500ミリ秒ごとに繰り返す
+        timerId = setInterval(fireworks, 500);
+
+        // メッセージを表示する関数
+        function showMessage() {
+            const message = document.getElementById("message");
+            message.style.animation = "fadeIn 2s ease-in-out forwards";
         }
     </script>
 </body>
