@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>pdev Farewell Message</title>
+  <title>pdev Message of Departure</title>
   <style>
     body {
       margin: 0;
@@ -59,7 +59,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>pdev Farewell Message</title>
+  <title>pdev Message of Departure</title>
   <style>
     body {
       margin: 0;
@@ -86,26 +86,28 @@
 
     // タイピング速度設定
     let index = 0;
-    const typingSpeed = 50; // タイピング速度を速めに設定
+    const typingSpeed = 20; // タイピング速度をさらに速く設定
 
+    // 色の定義
     let colors = {
       tag: "#569CD6",        // タグ名の色
       attribute: "#9CDCFE",  // 属性名の色
       string: "#CE9178",     // 文字列の色
-      brackets: "#D4D4D4"    // 括弧の色
+      brackets: "#D4D4D4",   // 括弧の色
+      text: "#D4D4D4"        // デフォルトテキストの色
     };
 
     // 構文をハイライトする関数
     function syntaxHighlight(line) {
       return line
         // タグ名（<html>, </head> など）
-        .replace(/(&lt;\/?[a-zA-Z0-9]+)/g, `<span style="color: ${colors.tag};">$1</span>`)
+        .replace(/(<\/?[a-zA-Z0-9]+)/g, `<span style="color: ${colors.tag};">$1</span>`)
         // 属性名（charset, name など）
         .replace(/([a-z\-]+)="[^"]*"/g, `<span style="color: ${colors.attribute};">$1</span>`)
         // 文字列（"UTF-8", "width=device-width" など）
         .replace(/"([^"]*)"/g, `<span style="color: ${colors.string};">"$1"</span>`)
         // 括弧（<, > など）
-        .replace(/(&gt;|&lt;)/g, `<span style="color: ${colors.brackets};">$1</span>`);
+        .replace(/(<|>)/g, `<span style="color: ${colors.brackets};">$1</span>`);
     }
 
     // タイピングのアニメーション
