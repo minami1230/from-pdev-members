@@ -1,153 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farewell Animation</title>
-    <style>
-        body {
-            margin: 0;
-            background-color: #1e1e1e; /* ダークモードの背景 */
-            font-family: "Courier New", monospace; /* コーディング画面風のフォント */
-            overflow: hidden;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pdev Team Message</title>
+  <style>
+    /* ベーススタイル */
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #1e1e1e;
+      font-family: monospace;
+    }
+    canvas {
+      display: block;
+    }
 
-        #code {
-            position: absolute;
-            top: 20%;
-            left: 10%;
-            font-size: 14px; /* コードの文字サイズ */
-            line-height: 1.5;
-            color: #00ff00; /* 緑色の文字 */
-        }
+    /* 最終メッセージのスタイル */
+    .message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      display: none;
+      animation: fadeIn 2s ease-in forwards;
+      font-size: 1.5rem;
+    }
 
-        #cursor {
-            display: inline-block;
-            width: 10px;
-            height: 14px;
-            background-color: #00ff00;
-            animation: blink 1s infinite; /* カーソルの点滅アニメーション */
-        }
-
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        #tree {
-            position: absolute;
-            top: 30%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            opacity: 0;
-            animation: growTree 4s ease-in-out 3s forwards; /* ツリーの成長アニメーション */
-        }
-
-        @keyframes growTree {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        }
-
-        #message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 20px; /* メッセージの文字サイズ */
-            color: white;
-            text-align: center;
-            opacity: 0;
-            animation: fadeIn 3s ease-in-out 7s forwards; /* メッセージ表示アニメーション */
-        }
-
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(50px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        .particle {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            background-color: #ffffff;
-            border-radius: 50%;
-            animation: floatParticle 3s ease-in-out infinite;
-        }
-
-        @keyframes floatParticle {
-            0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-50px); }
-        }
-    </style>
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+    .message div {
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-    <div id="code"></div>
-    <div id="tree">
-        <svg width="100" height="100" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="40" fill="green"></circle> <!-- ツリーの形 -->
-        </svg>
-    </div>
-    <div id="message">○○さん、今までpdevを引っ張ってくださり、本当にありがとうございました！</div>
+  <!-- コーディング風アニメーションを表示するCanvas -->
+  <canvas id="codeCanvas"></canvas>
 
-    <script>
-        const codeLines = [
-            "const pdev = 'A team of engineers';",
-            "const growth = 'Continuous improvement';",
-            "console.log('Thank you for your leadership!');"
-        ];
+  <!-- 最終メッセージ -->
+  <div class="message" id="message">
+    <div style="color: #36d4ff;">pdevと共に成長し続けます。</div>
+    <div style="color: white;">絆と挑戦は永遠です。</div>
+  </div>
 
-        const codeContainer = document.getElementById("code");
-        const cursor = document.createElement("span");
-        cursor.id = "cursor";
-        codeContainer.appendChild(cursor);
+  <!-- JavaScript -->
+  <script>
+    const canvas = document.getElementById("codeCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-        let lineIndex = 0;
-        let charIndex = 0;
-        let currentLine = "";
+    // メッセージをエンジニアリング的に表現するためのコード（暗示的に意味を込める）
+    const pdev = {
+      name: "pdev",
+      members: [
+        "Leader",
+        "Engineer1",
+        "Engineer2",
+        "Engineer3",
+        "Engineer4",
+        // メンバーは成長し続ける過程を象徴
+      ],
+      vision: () => "共に成長し続ける",
+      gratitude: () => "今までのご指導への感謝を込めて",
+      future: () => "絆と挑戦は永遠です",
+    };
 
-        function typeCode() {
-            if (lineIndex < codeLines.length) {
-                const currentLineText = codeLines[lineIndex];
-                if (charIndex < currentLineText.length) {
-                    currentLine += currentLineText[charIndex];
-                    codeContainer.innerHTML = `<span>${currentLine}</span>`;
-                    codeContainer.appendChild(cursor); // カーソルを最新の文字の後ろに配置
-                    charIndex++;
-                    setTimeout(typeCode, 50); // タイピング速度を設定
-                } else {
-                    currentLine += "<br>";
-                    charIndex = 0;
-                    lineIndex++;
-                    setTimeout(typeCode, 200); // 次の行に進むまでの遅延
-                }
-            } else {
-                cursor.style.display = "none"; // タイピング終了後カーソルを消す
-                showTree(); // ツリーを表示
-            }
+    // メッセージを表現するためのコード
+    const eternity = function (message) {
+      while (true) {
+        // 絆が永遠であることを繰り返しで象徴
+        console.log(`${pdev.name}: ${message}`);
+      }
+    };
+
+    // タイピング風のコードアニメーション
+    const codeLines = [
+      `const pdev = {`,
+      `  name: "${pdev.name}",`,
+      `  members: ["${pdev.members.join('", "')}"],`,
+      `  vision: () => "${pdev.vision()}",`,
+      `  gratitude: () => "${pdev.gratitude()}",`,
+      `  future: () => "${pdev.future()}",`,
+      `};`,
+      `function eternity(message) {`,
+      `  while (true) {`,
+      `    console.log(\`\${pdev.name}: \${message}\`);`,
+      `  }`,
+      `}`,
+      `eternity("絆と挑戦は永遠です。");`,
+    ];
+
+    let currentLine = 0;
+    let typingIndex = 0;
+    let delay = 100;
+    let fadeMessageDisplayed = false;
+
+    // コードを1行ずつ描画するメソッド
+    function drawCode() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.font = "20px monospace";
+      ctx.fillStyle = "#36d4ff"; // 明るい青色でコードを強調
+
+      for (let i = 0; i < currentLine; i++) {
+        ctx.fillText(codeLines[i], 50, 50 + i * 30);
+      }
+
+      if (currentLine < codeLines.length) {
+        const textToDraw = codeLines[currentLine].slice(0, typingIndex + 1);
+        ctx.fillText(textToDraw, 50, 50 + currentLine * 30);
+
+        if (typingIndex < codeLines[currentLine].length) {
+          typingIndex++;
+        } else {
+          typingIndex = 0;
+          currentLine++;
         }
+      } else {
+        showFinalMessage();
+      }
+    }
 
-        typeCode();
+    // 最終メッセージをもう一度画面に強調表示
+    function showFinalMessage() {
+      if (!fadeMessageDisplayed) {
+        fadeMessageDisplayed = true;
 
-        function showTree() {
-            const tree = document.getElementById("tree");
-            tree.style.animation = "growTree 4s ease-in-out forwards";
-            createParticles(); // パーティクルを生成
-        }
+        const messageDiv = document.getElementById("message");
+        messageDiv.style.display = "block"; // メッセージを表示
+      }
+    }
 
-        function createParticles() {
-            for (let i = 0; i < 30; i++) {
-                const particle = document.createElement("div");
-                particle.className = "particle";
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.top = `${Math.random() * 100}%`;
-                document.body.appendChild(particle);
+    // アニメーション開始
+    function startAnimation() {
+      setInterval(drawCode, delay);
+    }
 
-                particle.addEventListener("animationend", () => {
-                    particle.remove(); // アニメーション終了後に削除
-                });
-            }
-        }
-    </script>
+    startAnimation();
+  </script>
 </body>
 </html>
