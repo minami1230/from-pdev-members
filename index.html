@@ -17,33 +17,64 @@
             position: absolute;
             top: 20%;
             left: 10%;
-            font-size: 20px;
+            font-size: 18px;
+            line-height: 1.5;
+            color: #00ff00; /* コーディング画面の文字色 */
+        }
+
+        #cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background-color: #00ff00;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
         }
 
         #message {
             position: absolute;
-            top: 50%;
+            bottom: 10%;
             left: 50%;
             transform: translateX(-50%);
             font-size: 24px;
-            color: #00ff00;
+            color: white;
+            text-align: center;
             opacity: 0;
-            animation: fadeInMessage 2s ease-in-out 5s forwards;
+            animation: fadeIn 2s ease-in-out 3s forwards, blinkMessage 1s ease-in-out 5s 3;
         }
 
-        @keyframes fadeInMessage {
-            0% {
-                opacity: 0;
-            }
-            100% {
-                opacity: 1;
-            }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes blinkMessage {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        #fireworks-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
     <div id="code"></div>
-    <div id="message">今までpdevを引っ張ってくださり、本当にありがとうございました!　pdev一同成長した姿を見せられるよう頑張ります！</div>
+    <div id="fireworks-container"></div>
+    <div id="message">
+        今までpdevを引っ張ってくださり、本当にありがとうございました！<br>
+        pdev一同成長した姿を見せられるよう頑張ります！
+    </div>
 
     <script>
         const codeLines = [
@@ -53,19 +84,51 @@
         ];
 
         const codeContainer = document.getElementById("code");
+        const cursor = document.createElement("span");
+        cursor.id = "cursor";
+        codeContainer.appendChild(cursor);
+
         let index = 0;
 
         function typeCode() {
             if (index < codeLines.length) {
                 const line = document.createElement("div");
                 line.textContent = codeLines[index];
-                codeContainer.appendChild(line);
+                codeContainer.insertBefore(line, cursor);
                 index++;
-                setTimeout(typeCode, 1000);
+                setTimeout(typeCode, 1000); // 次の行を表示するまでの遅延
+            } else {
+                cursor.style.display = "none"; // タイピングが終了したらカーソルを消す
+                launchFireworks(); // 花火アニメーションを開始
             }
         }
 
         typeCode();
+
+        function launchFireworks() {
+            const container = document.getElementById("fireworks-container");
+            for (let i = 0; i < 10; i++) {
+                const firework = document.createElement("div");
+                firework.style.position = "absolute";
+                firework.style.width = "5px";
+                firework.style.height = "5px";
+                firework.style.backgroundColor = "white";
+                firework.style.borderRadius = "50%";
+                firework.style.top = `${Math.random() * window.innerHeight}px`;
+                firework.style.left = `${Math.random() * window.innerWidth}px`;
+                firework.style.animation = `explode 1s ease-in-out ${i * 0.1}s forwards`;
+                container.appendChild(firework);
+
+                firework.addEventListener("animationend", () => {
+                    container.removeChild(firework);
+                });
+            }
+
+            setTimeout(() => {
+                const message = document.getElementById("message");
+                message.style.animation = "fadeIn 2s ease-in-out forwards";
+            }, 2000);
+        }
     </script>
 </body>
 </html>
