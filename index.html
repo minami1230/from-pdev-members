@@ -7,8 +7,8 @@
     <style>
         body {
             margin: 0;
-            background-color: #1e1e1e;
-            font-family: "Courier New", monospace;
+            background-color: #1e1e1e; /* 背景色をコーディング画面風に */
+            font-family: "Courier New", monospace; /* フォントをコーディング風に */
             overflow: hidden;
         }
 
@@ -18,7 +18,7 @@
             left: 10%;
             font-size: 14px; /* 左上の文字のサイズ */
             line-height: 1.5;
-            color: #ffffff;
+            color: #ffffff; /* 白い文字 */
         }
 
         #cursor {
@@ -26,7 +26,7 @@
             width: 10px;
             height: 14px;
             background-color: #ffffff;
-            animation: blink 1s infinite;
+            animation: blink 1s infinite; /* カーソルの点滅 */
         }
 
         @keyframes blink {
@@ -40,71 +40,22 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 20px;
+            font-size: 20px; /* メッセージのフォントサイズ */
             color: white;
             text-align: center;
             opacity: 0;
-            animation: fadeIn 2s ease-in-out forwards;
+            animation: fadeIn 2s ease-in-out forwards; /* メッセージ表示アニメーション */
         }
 
         @keyframes fadeIn {
             0% { opacity: 0; transform: translateY(50px); }
             100% { opacity: 1; transform: translateY(0); }
         }
-
-        #outer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        #inner {
-            overflow: visible;
-        }
-
-        #line {
-            stroke-width: 3px;
-            stroke-dashoffset: 50%;
-            stroke-dasharray: 5% 20%; /* 線の長さを短縮 */
-            animation: hanabi 2.5s ease-out;
-        }
-
-        @keyframes hanabi {
-            60% { transform: translateY(0%); }
-            90% { opacity: 1; }
-            to { stroke-dasharray: 50%; transform: translateY(20%); opacity: 0; }
-        }
     </style>
 </head>
 <body>
     <div id="code"></div>
-    <svg id="outer" viewBox="0 0 400 300">
-        <svg id="inner" viewBox="0 0 300 300" x="-100%">
-            <g id="line">
-                <line x1="50%" y1="50%" x2="75%" y2="50%"></line>
-                <line x1="50%" y1="50%" x2="73.49%" y2="58.55%"></line>
-                <line x1="50%" y1="50%" x2="69.15%" y2="66.07%"></line>
-                <line x1="50%" y1="50%" x2="62.50%" y2="71.65%"></line>
-                <line x1="50%" y1="50%" x2="54.34%" y2="74.62%"></line>
-                <line x1="50%" y1="50%" x2="45.66%" y2="74.62%"></line>
-                <line x1="50%" y1="50%" x2="37.50%" y2="71.65%"></line>
-                <line x1="50%" y1="50%" x2="30.85%" y2="66.07%"></line>
-                <line x1="50%" y1="50%" x2="26.51%" y2="58.55%"></line>
-                <line x1="50%" y1="50%" x2="25%" y2="50%"></line>
-                <line x1="50%" y1="50%" x2="26.51%" y2="41.45%"></line>
-                <line x1="50%" y1="50%" x2="30.85%" y2="33.93%"></line>
-                <line x1="50%" y1="50%" x2="37.50%" y2="28.35%"></line>
-                <line x1="50%" y1="50%" x2="45.66%" y2="25.38%"></line>
-                <line x1="50%" y1="50%" x2="54.34%" y2="25.38%"></line>
-                <line x1="50%" y1="50%" x2="62.50%" y2="28.35%"></line>
-                <line x1="50%" y1="50%" x2="69.15%" y2="33.93%"></line>
-                <line x1="50%" y1="50%" x2="73.49%" y2="41.45%"></line>
-            </g>
-        </svg>
-    </svg>
-    <div id="message">今までpdevを引っ張ってくださりありがとうございました！<br>pdev一同成長した姿を見せられるよう頑張ります！</div>
+    <div id="message"></div>
 
     <script>
         const codeLines = [
@@ -112,6 +63,8 @@
             "const growth = 'Continuous improvement';",
             "console.log('Thank you for your leadership!');"
         ];
+
+        const messageText = "今までpdevを引っ張ってくださりありがとうございました！<br>pdev一同成長した姿を見せられるよう頑張ります！";
 
         const codeContainer = document.getElementById("code");
         const cursor = document.createElement("span");
@@ -127,7 +80,7 @@
                 if (charIndex < currentLine.length) {
                     codeContainer.innerHTML += currentLine[charIndex];
                     charIndex++;
-                    setTimeout(typeCode, 50); // タイピング速度を速く設定
+                    setTimeout(typeCode, 50); // タイピング速度を設定
                 } else {
                     codeContainer.innerHTML += "<br>";
                     charIndex = 0;
@@ -136,55 +89,15 @@
                 }
             } else {
                 cursor.style.display = "none"; // タイピング終了後カーソルを消す
-                launchFireworks(); // 花火アニメーションを開始
+                showMessage(); // メッセージ表示
             }
         }
 
         typeCode();
 
-        const outer = document.getElementById("outer");
-        const inner = document.getElementById("inner");
-
-        const colors = ["red", "blue", "yellow", "green", "orange", "purple"];
-        let fireworkCount = 0;
-
-        function fireworks() {
-            let clone = inner.cloneNode(true);
-
-            // アニメーション終了時に削除するよう設定
-            clone.children[0].addEventListener("animationend", function () {
-                clone.remove();
-            });
-
-            // 花火の属性値を設定
-            let horizontal = fireworkCount === 2 ? "50%" : String(Math.random() * 100 - 25) + "%"; // 最後の花火は中央
-            let vertical = fireworkCount === 2 ? "50%" : String(Math.random() * 100 - 50) + "%"; // 最後の花火は中央
-            let randomColor = colors[Math.floor(Math.random() * colors.length)];
-            let size = fireworkCount === 2 ? "50%" : String(Math.random() * 20 + 30) + "%"; // 最後の花火は大きく
-
-            // 属性をセット
-            clone.setAttribute("x", horizontal);
-            clone.setAttribute("y", vertical);
-            clone.setAttribute("width", "auto");
-            clone.setAttribute("height", size);
-            clone.children[0].style.stroke = randomColor;
-
-            // outerに追加
-            outer.appendChild(clone);
-
-            // 花火のカウントを管理
-            fireworkCount++;
-            if (fireworkCount === 3) {
-                setTimeout(showMessage, 1000); // 最後の花火の後にメッセージを表示
-            }
-        }
-
-        // 花火を3発限定で表示
-        setInterval(fireworks, 1000);
-
-        // メッセージを表示する関数
         function showMessage() {
             const message = document.getElementById("message");
+            message.innerHTML = messageText;
             message.style.animation = "fadeIn 2s ease-in-out forwards";
         }
     </script>
