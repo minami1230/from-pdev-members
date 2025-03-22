@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>pdev Message of Departure</title>
   <style>
-    /* 全体のスタイル */
     body {
       margin: 0;
       padding: 0;
@@ -22,20 +22,17 @@
     #code {
       padding: 20px;
       white-space: pre-wrap;
-      font-size: 14px; /* 修正: 文字サイズを小さく調整 */
-      line-height: 1.3;
+      font-size: 16px;
+      line-height: 1.5;
     }
 
     #message {
       display: none;
       text-align: center;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
       animation: fadeIn 2s ease-in forwards;
       color: white;
-      font-size: 2rem;
+      font-size: 1.5rem;
+      margin-top: 20%;
     }
 
     @keyframes fadeIn {
@@ -46,7 +43,6 @@
         opacity: 1;
       }
     }
-
   </style>
 </head>
 <body>
@@ -91,7 +87,7 @@
 
     // タイピング速度設定
     let index = 0;
-    const typingSpeed = 50; // 修正: タイピング速度を少し遅く設定
+    const typingSpeed = 10; // タイピング速度をさらに速く設定
 
     // 色分け設定
     let colors = {
@@ -121,9 +117,9 @@
         codeElement.innerHTML += htmlCode[index] === '\n' ? '<br>' : htmlCode[index];
         index++;
         if (index < htmlCode.length) {
-          setTimeout(typeCode, typingSpeed);
+          setTimeout(typeCode, typingSpeed); // 指定の速度で次の文字を表示
         } else {
-          setTimeout(showMessage, 2000);
+          setTimeout(showMessage, 2000); // 全てのコードが表示されてから2秒後にメッセージ表示
         }
       }
     }
