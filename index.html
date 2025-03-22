@@ -3,21 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>pdev Team Message</title>
+  <title>pdev Farewell Message</title>
   <style>
-    /* ベーススタイル */
+    /* VS Code風の背景とコードスタイル */
     body {
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: #1e1e1e;
-      font-family: monospace;
+      background-color: #1e1e1e; /* ダークブルーグレー背景 */
+      font-family: 'Consolas', 'Courier New', monospace;
+      color: #d4d4d4; /* VS Code風の文字色 */
     }
+
     canvas {
       display: block;
     }
 
-    /* 最終メッセージのスタイル */
+    /* 感謝メッセージをフェードイン */
     .message {
       position: absolute;
       top: 50%;
@@ -27,6 +29,7 @@
       display: none;
       animation: fadeIn 2s ease-in forwards;
       font-size: 1.5rem;
+      color: white;
     }
 
     @keyframes fadeIn {
@@ -37,60 +40,40 @@
         opacity: 1;
       }
     }
-    .message div {
-      margin-bottom: 20px;
-    }
   </style>
 </head>
 <body>
-  <!-- コーディング風アニメーションを表示するCanvas -->
+  <!-- コーディングアニメーションを表示するエリア -->
   <canvas id="codeCanvas"></canvas>
 
-  <!-- 最終メッセージ -->
+  <!-- 感謝のメッセージ -->
   <div class="message" id="message">
-    <div style="color: #36d4ff;">pdevと共に成長し続けます。</div>
-    <div style="color: white;">絆と挑戦は永遠です。</div>
+    今までpdevを引っ張ってくださりありがとうございました！<br>
+    pdev一同、成長した姿を見せられるよう頑張ります！
   </div>
 
-  <!-- JavaScript -->
   <script>
     const canvas = document.getElementById("codeCanvas");
     const ctx = canvas.getContext("2d");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // メッセージをエンジニアリング的に表現するためのコード（暗示的に意味を込める）
-    const pdev = {
-      name: "pdev",
-      members: [
-        "Leader",
-        "Engineer1",
-        "Engineer2",
-        "Engineer3",
-        "Engineer4",
-        // メンバーは成長し続ける過程を象徴
-      ],
-      vision: () => "共に成長し続ける",
-      gratitude: () => "今までのご指導への感謝を込めて",
-      future: () => "絆と挑戦は永遠です",
+    // VS Code風の色設定
+    const colors = {
+      keyword: '#569cd6', // キーワード（const, function）
+      string: '#ce9178', // 文字列
+      variable: '#9cdcfe', // 変数名
+      brackets: '#d4d4d4', // 括弧
     };
 
-    // メッセージを表現するためのコード
-    const eternity = function (message) {
-      while (true) {
-        // 絆が永遠であることを繰り返しで象徴
-        console.log(`${pdev.name}: ${message}`);
-      }
-    };
-
-    // タイピング風のコードアニメーション
+    // タイピング風のコード
     const codeLines = [
       `const pdev = {`,
-      `  name: "${pdev.name}",`,
-      `  members: ["${pdev.members.join('", "')}"],`,
-      `  vision: () => "${pdev.vision()}",`,
-      `  gratitude: () => "${pdev.gratitude()}",`,
-      `  future: () => "${pdev.future()}",`,
+      `  name: "pdev",`,
+      `  members: ["Leader", "Engineer1", "Engineer2", "Engineer3", "Engineer4"],`,
+      `  vision: () => "共に成長し続ける",`,
+      `  gratitude: () => "今までのご指導への感謝を込めて",`,
+      `  future: () => "絆と挑戦は永遠です",`,
       `};`,
       `function eternity(message) {`,
       `  while (true) {`,
@@ -103,21 +86,23 @@
     let currentLine = 0;
     let typingIndex = 0;
     let delay = 100;
+    let fadeOutDelay = 1500; // 文字が消えるまでの時間
     let fadeMessageDisplayed = false;
 
-    // コードを1行ずつ描画するメソッド
+    // コードを1行ずつ描画する関数
     function drawCode() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.font = "20px monospace";
-      ctx.fillStyle = "#36d4ff"; // 明るい青色でコードを強調
+      ctx.font = "18px 'Consolas', monospace";
 
+      // 既存の行を表示
       for (let i = 0; i < currentLine; i++) {
-        ctx.fillText(codeLines[i], 50, 50 + i * 30);
+        drawSyntaxHighlightedLine(codeLines[i], 50, 50 + i * 28);
       }
 
+      // 現在の行をタイピング風に表示
       if (currentLine < codeLines.length) {
         const textToDraw = codeLines[currentLine].slice(0, typingIndex + 1);
-        ctx.fillText(textToDraw, 50, 50 + currentLine * 30);
+        drawSyntaxHighlightedLine(textToDraw, 50, 50 + currentLine * 28);
 
         if (typingIndex < codeLines[currentLine].length) {
           typingIndex++;
@@ -126,12 +111,31 @@
           currentLine++;
         }
       } else {
-        showFinalMessage();
+        // すべての行が表示された後、文字を消しフェードインメッセージを表示
+        setTimeout(fadeOutCode, fadeOutDelay);
       }
     }
 
-    // 最終メッセージをもう一度画面に強調表示
-    function showFinalMessage() {
+    // コードを構文ハイライト付きで描画する関数
+    function drawSyntaxHighlightedLine(line, x, y) {
+      const tokens = line.split(/(\s+|["'{}();,.]+)/); // 空白や記号で分割
+      let xOffset = x;
+
+      tokens.forEach(token => {
+        let color = colors.brackets; // デフォルト色
+        if (/^(const|function)$/.test(token)) color = colors.keyword; // キーワード
+        else if (/^["'].*["']$/.test(token)) color = colors.string; // 文字列
+        else if (/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(token)) color = colors.variable; // 変数名
+
+        ctx.fillStyle = color;
+        ctx.fillText(token, xOffset, y);
+        xOffset += ctx.measureText(token).width; // 描画位置を更新
+      });
+    }
+
+    // コードをフェードアウトさせる関数
+    function fadeOutCode() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (!fadeMessageDisplayed) {
         fadeMessageDisplayed = true;
 
@@ -140,7 +144,7 @@
       }
     }
 
-    // アニメーション開始
+    // コードアニメーションを開始
     function startAnimation() {
       setInterval(drawCode, delay);
     }
