@@ -17,16 +17,27 @@
             position: absolute;
             top: 20%;
             left: 10%;
-            font-size: 18px;
+            font-size: 12px; /* より小さい文字サイズ */
             line-height: 1.5;
-            color: #00ff00; /* コーディング画面の文字色 */
+        }
+
+        .blue {
+            color: #007bff; /* 青 */
+        }
+
+        .white {
+            color: #ffffff; /* 白 */
+        }
+
+        .orange {
+            color: #ffa500; /* オレンジ */
         }
 
         #cursor {
             display: inline-block;
             width: 10px;
-            height: 18px;
-            background-color: #00ff00;
+            height: 12px;
+            background-color: #ffffff;
             animation: blink 1s infinite;
         }
 
@@ -38,24 +49,19 @@
 
         #message {
             position: absolute;
-            bottom: 10%;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            font-size: 24px;
+            transform: translate(-50%, -50%);
+            font-size: 20px; /* 添付1枚目と同じフォントサイズ */
             color: white;
             text-align: center;
             opacity: 0;
-            animation: fadeIn 2s ease-in-out 3s forwards, blinkMessage 1s ease-in-out 5s 3;
+            animation: fadeIn 2s ease-in-out 3s forwards;
         }
 
         @keyframes fadeIn {
             0% { opacity: 0; transform: translateY(50px); }
             100% { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes blinkMessage {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
         }
 
         #fireworks-container {
@@ -71,16 +77,13 @@
 <body>
     <div id="code"></div>
     <div id="fireworks-container"></div>
-    <div id="message">
-        今までpdevを引っ張ってくださり、本当にありがとうございました！<br>
-        pdev一同成長した姿を見せられるよう頑張ります！
-    </div>
+    <div id="message">今までpdevを引っ張ってくださりありがとうございました！<br>pdev一同成長した姿を見せられるよう頑張ります！</br></div>
 
     <script>
         const codeLines = [
-            "const pdev = 'A team of engineers';",
-            "const growth = 'Continuous improvement';",
-            "console.log('Thank you for your leadership!');"
+            "<span class='blue'>const</span> <span class='white'>pdev</span> <span class='white'>=</span> <span class='orange'>'A team of engineers'</span>;",
+            "<span class='blue'>const</span> <span class='white'>growth</span> <span class='white'>=</span> <span class='orange'>'Continuous improvement'</span>;",
+            "<span class='white'>console.log</span><span class='white'>(</span><span class='orange'>'Thank you for your leadership!'</span><span class='white'>)</span>;"
         ];
 
         const codeContainer = document.getElementById("code");
@@ -93,7 +96,7 @@
         function typeCode() {
             if (index < codeLines.length) {
                 const line = document.createElement("div");
-                line.textContent = codeLines[index];
+                line.innerHTML = codeLines[index]; // innerHTMLで色付き文字を反映
                 codeContainer.insertBefore(line, cursor);
                 index++;
                 setTimeout(typeCode, 1000); // 次の行を表示するまでの遅延
@@ -112,22 +115,17 @@
                 firework.style.position = "absolute";
                 firework.style.width = "5px";
                 firework.style.height = "5px";
-                firework.style.backgroundColor = "white";
+                firework.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`; // ランダムな色
                 firework.style.borderRadius = "50%";
                 firework.style.top = `${Math.random() * window.innerHeight}px`;
                 firework.style.left = `${Math.random() * window.innerWidth}px`;
-                firework.style.animation = `explode 1s ease-in-out ${i * 0.1}s forwards`;
+                firework.style.animation = `explode 1s ease-in-out ${i * 0.2}s forwards`;
                 container.appendChild(firework);
 
                 firework.addEventListener("animationend", () => {
                     container.removeChild(firework);
                 });
             }
-
-            setTimeout(() => {
-                const message = document.getElementById("message");
-                message.style.animation = "fadeIn 2s ease-in-out forwards";
-            }, 2000);
         }
     </script>
 </body>
