@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Farewell Message</title>
-  <!-- おしゃれな日本語フォント -->
+  <!-- おしゃれなフォント -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -87,15 +87,15 @@
     const codeElement = document.getElementById("code");
     const messageElement = document.getElementById("message");
 
-    // 表示内容を保存する
+    // タイピングで表示する内容（エスケープ処理後）
     const htmlCode = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Farewell Message</title>
-  <style>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;Farewell Message&lt;/title&gt;
+  &lt;style&gt;
     body {
       margin: 0;
       padding: 0;
@@ -103,10 +103,10 @@
       color: white;
       font-family: 'Noto Sans JP', sans-serif;
     }
-  </style>
-</head>
-<body>
-  <script>
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;script&gt;
     const team = "Not as pdev anymore, but always striving together as teammates.";
     const gratitude = "Thank you for your dedication and for leading us forward.";
     const commitment = "We commit ourselves to growing and reaching new heights.";
@@ -117,9 +117,9 @@
 
     const finalMessage = generateFarewellMessage(team, gratitude, commitment);
     console.log(finalMessage);
-  </script>
-</body>
-</html>
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 `.trim();
 
     let index = 0;
@@ -128,10 +128,8 @@
     // 構文ハイライト関数
     function syntaxHighlight(code) {
       return code
-        .replace(/</g, "&lt;") // HTMLエスケープ: < を &lt; に変換
-        .replace(/>/g, "&gt;") // HTMLエスケープ: > を &gt; に変換
         .replace(/&lt;([\/]?[a-zA-Z0-9]+)/g, `<span class="tag">&lt;$1</span>`) // HTMLタグを赤色に変更
-        .replace(/([a-z-]+)(=)/g, `<span class="attribute">$1</span>$2`) // 属性名をオレンジ色に変更
+        .replace(/([a-z\-]+)(=)/g, `<span class="attribute">$1</span>$2`) // 属性名をオレンジ色に変更
         .replace(/"([^"]*)"/g, `<span class="string">"$1"</span>`) // 文字列を緑色に変更
         .replace(/\b(const|let|function|return|console|log)\b/g, `<span class="keyword">$1</span>`); // キーワードを紫色に変更
     }
@@ -139,12 +137,12 @@
     // タイピングアニメーション
     function typeCode() {
       if (index <= htmlCode.length) {
-        const currentCode = htmlCode.slice(0, index);
-        codeElement.innerHTML = syntaxHighlight(currentCode); // 文字列に構文ハイライトを適用
+        const currentCode = htmlCode.slice(0, index); // タイピング進行部分取得
+        codeElement.innerHTML = syntaxHighlight(currentCode); // 構文ハイライトを適用
         index++;
         if (index === htmlCode.length) {
           setTimeout(() => codeElement.style.opacity = 0, 1000); // フェードアウト
-          setTimeout(showMessage, 2000); // メッセージ表示
+          setTimeout(showMessage, 2000); // 最終メッセージ表示
         } else {
           setTimeout(typeCode, typingSpeed); // タイピング速度
         }
@@ -153,11 +151,11 @@
 
     // メッセージ表示
     function showMessage() {
-      codeElement.style.display = "none"; // コーディング内容非表示
-      messageElement.style.display = "block"; // メッセージを表示
+      codeElement.style.display = "none"; // コーディング部分非表示
+      messageElement.style.display = "block"; // メッセージを中央に表示
     }
 
-    // タイピングアニメーション開始
+    // タイピングアニメーションを開始
     typeCode();
   </script>
 </body>
