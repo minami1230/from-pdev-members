@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Farewell Message</title>
+  <!-- おしゃれな日本語フォント -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -26,7 +27,6 @@
       white-space: pre-wrap;
       font-size: 14px;
       line-height: 1.5;
-      color: #ffffff; /* デフォルトテキスト色 */
     }
 
     #message {
@@ -48,7 +48,7 @@
     }
 
     .attribute {
-      color: orange; /* lang属性などキー */
+      color: orange; /* langや属性名など */
     }
 
     .string {
@@ -56,7 +56,7 @@
     }
 
     .keyword {
-      color: purple; /* const, functionなどキーワード */
+      color: purple; /* const, function, returnなど */
     }
 
     @keyframes fadeIn {
@@ -86,7 +86,7 @@
     const codeElement = document.getElementById("code");
     const messageElement = document.getElementById("message");
 
-    // タイピングで表示する内容
+    // タイピング表示内容（色分け付き）
     const htmlCode = `
 <!DOCTYPE html>
 <html lang="en">
@@ -122,9 +122,9 @@
 `.trim();
 
     let index = 0;
-    const typingSpeed = 20;
+    const typingSpeed = 10; // タイピング速度を速く設定
 
-    // 構文ハイライト関数
+    // 構文ハイライト処理
     function syntaxHighlight(code) {
       return code
         .replace(/<([\/]?[a-zA-Z0-9]+)/g, `<span class="tag">&lt;$1</span>`) // HTMLタグ (<html>, </body>)
@@ -135,26 +135,26 @@
 
     // タイピングアニメーション
     function typeCode() {
-      if (index < htmlCode.length) {
-        const currentCode = htmlCode.slice(0, index); // 現在の部分を取得
-        codeElement.innerHTML = syntaxHighlight(currentCode); // 構文ハイライト適用
+      if (index <= htmlCode.length) {
+        const currentCode = htmlCode.slice(0, index);
+        codeElement.innerHTML = syntaxHighlight(currentCode); // 構文ハイライトを適用
         index++;
-        if (index === htmlCode.length - 50) {
+        if (index === htmlCode.length) {
           setTimeout(() => codeElement.style.opacity = 0, 1000); // フェードアウト
           setTimeout(showMessage, 2000); // メッセージ表示
         } else {
-          setTimeout(typeCode, typingSpeed);
+          setTimeout(typeCode, typingSpeed); // タイピング速度をタイマーに適用
         }
       }
     }
 
     // メッセージ表示
     function showMessage() {
-      codeElement.style.display = "none";
-      messageElement.style.display = "block";
+      codeElement.style.display = "none"; // コーディング部分を非表示
+      messageElement.style.display = "block"; // メッセージを画面中央に表示
     }
 
-    // アニメーション開始
+    // アニメーション開始（タイピング）
     typeCode();
   </script>
 </body>
