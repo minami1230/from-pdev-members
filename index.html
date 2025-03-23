@@ -13,9 +13,10 @@
       background-color: #1e1e1e;
       font-family: 'Noto Sans JP', sans-serif;
       display: flex;
-      height: 100vh;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
+      height: 100vh;
       color: #d4d4d4;
     }
 
@@ -31,7 +32,7 @@
 
     #message {
       display: none;
-      position: absolute;
+      position: fixed; /* コーディング部分の影響を受けず固定 */
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
@@ -39,24 +40,29 @@
       font-size: 1.7rem;
       line-height: 1.8;
       text-align: center;
-      width: 90%; /* 横幅を画面いっぱいに収める */
+      width: 90%;
       animation: fadeIn 1.5s ease-in-out forwards;
     }
 
+    #message p {
+      margin: 0;
+    }
+
+    /* 構文ハイライトのスタイル */
     .tag {
-      color: red; /* HTMLタグ */
+      color: red;
     }
 
     .attribute {
-      color: orange; /* 属性名 */
+      color: orange;
     }
 
     .string {
-      color: #27c627; /* 緑 */
+      color: #27c627;
     }
 
     .keyword {
-      color: #9b59b6; /* 紫 */
+      color: #9b59b6;
     }
 
     @keyframes fadeIn {
@@ -126,13 +132,13 @@
 `.trim();
 
     let index = 0;
-    const typingSpeed = 15;
+    const typingSpeed = 15; // タイピング速度設定
 
     // 構文ハイライト関数
     function syntaxHighlight(code) {
       return code
         .replace(/&lt;([\/]?[a-zA-Z0-9]+)/g, `<span class="tag">&lt;$1</span>`) // HTMLタグを赤色表示
-        .replace(/([a-z\-]+)(=)/g, `<span class="attribute">$1</span>$2`) // 属性をオレンジ表示
+        .replace(/(\b[a-z\-]+)(=)/g, `<span class="attribute">$1</span>$2`) // 属性をオレンジ表示
         .replace(/"([^"]*)"/g, `<span class="string">"$1"</span>`) // 文字列を緑表示
         .replace(/\b(const|let|function|return|console|log)\b/g, `<span class="keyword">$1</span>`); // キーワードを紫表示
     }
@@ -140,7 +146,7 @@
     function typeCode() {
       if (index <= htmlCode.length) {
         const currentCode = htmlCode.slice(0, index);
-        codeElement.innerHTML = syntaxHighlight(currentCode); // 構文ハイライト適用
+        codeElement.innerHTML = syntaxHighlight(currentCode);
         index++;
         if (index === htmlCode.length) {
           codeElement.style.animation = 'fadeOut 1.5s ease-in-out forwards';
