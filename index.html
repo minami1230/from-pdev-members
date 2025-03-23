@@ -37,30 +37,30 @@
       color: white;
       font-size: 1.7rem;
       line-height: 2.5rem;
-      width: 100%;
-      text-align: center;
+      width: 90%; /* 横幅で中央表示 */
+      text-align: center; /* メッセージを中央寄せ */
       animation: fadeIn 1.5s ease-in-out forwards;
     }
 
     #message p {
-      margin: 0;
+      margin: 0; /* 段落ごとの余白を均等にする */
     }
 
     /* 構文ハイライトのスタイル */
     .tag {
-      color: red;
+      color: red; /* HTMLタグ */
     }
 
     .attribute {
-      color: orange;
+      color: orange; /* 属性名 */
     }
 
     .string {
-      color: #27c627;
+      color: #27c627; /* 緑 (文字列) */
     }
 
     .keyword {
-      color: #9b59b6;
+      color: #9b59b6; /* 紫 (キーワード) */
     }
 
     @keyframes fadeIn {
@@ -132,13 +132,14 @@
 `.trim();
 
     let index = 0;
-    const typingSpeed = 15; // タイピング速度を調整
+    const typingSpeed = 15; // タイピング速度調整
 
     // 構文ハイライト関数
     function syntaxHighlight(code) {
+      // 順序を修正：タグと属性を先に処理する
       return code
         .replace(/&lt;([\/]?[a-zA-Z0-9]+)/g, `<span class="tag">&lt;$1</span>`) // HTMLタグを赤色に変更
-        .replace(/([a-z\-]+)(=)/g, `<span class="attribute">$1</span>$2`) // 属性名をオレンジ色に変更
+        .replace(/([a-z\-]+)(=)/g, `<span class="attribute">$1</span>$2`) // 属性をオレンジ色に変更
         .replace(/"([^"]*)"/g, `<span class="string">"$1"</span>`) // 文字列を緑色に変更
         .replace(/\b(const|let|function|return|console|log)\b/g, `<span class="keyword">$1</span>`); // キーワードを紫に変更
     }
@@ -149,11 +150,11 @@
         const currentCode = htmlCode.slice(0, index);
         codeElement.innerHTML = syntaxHighlight(currentCode); // 構文ハイライト適用
         index++;
-        if (index === htmlCode.length) { // タイピングが終了したら即座にフェードアウト
+        if (index === htmlCode.length) { // タイピング終了後に即フェードアウト
           codeElement.style.animation = 'fadeOut 1.5s ease-in-out forwards'; // フェードアウトアニメーション設定
-          setTimeout(showMessage, 1500); // メッセージ表示までの間を短縮
+          setTimeout(showMessage, 1500); // メッセージ表示までの間を詰める
         } else {
-          setTimeout(typeCode, typingSpeed); // タイピング速度適用
+          setTimeout(typeCode, typingSpeed); // タイピング速度を適用
         }
       }
     }
