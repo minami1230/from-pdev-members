@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Farewell Message</title>
-  <!-- おしゃれな日本語フォント -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -13,13 +12,11 @@
       background-color: #1e1e1e;
       font-family: 'Noto Sans JP', sans-serif;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
       height: 100vh;
       color: #d4d4d4;
     }
 
+    /* タイピング表示部分 */
     #code {
       position: absolute;
       top: 10px;
@@ -27,19 +24,19 @@
       white-space: pre-wrap;
       font-size: 14px;
       line-height: 1.5;
-      color: #ffffff;
     }
 
+    /* 最後のメッセージ部分 */
     #message {
       display: none;
-      position: fixed; /* コーディング部分の影響を受けず固定 */
+      position: fixed; /* 画面全体で中央表示 */
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       color: white;
       font-size: 1.7rem;
       line-height: 1.8;
-      text-align: center;
+      text-align: center; /* 中央揃え */
       width: 90%;
       animation: fadeIn 1.5s ease-in-out forwards;
     }
@@ -48,23 +45,24 @@
       margin: 0;
     }
 
-    /* 構文ハイライトのスタイル */
+    /* 構文ハイライトスタイル */
     .tag {
-      color: red;
+      color: red; /* HTMLタグ */
     }
 
     .attribute {
-      color: orange;
+      color: orange; /* 属性名 */
     }
 
     .string {
-      color: #27c627;
+      color: #27c627; /* 緑 */
     }
 
     .keyword {
-      color: #9b59b6;
+      color: #9b59b6; /* 紫 */
     }
 
+    /* アニメーション定義 */
     @keyframes fadeIn {
       from {
         opacity: 0;
@@ -99,6 +97,7 @@
     const codeElement = document.getElementById('code');
     const messageElement = document.getElementById('message');
 
+    // 初期のコード内容（エスケープ処理済み）
     const htmlCode = `
 &lt;!DOCTYPE html&gt;
 &lt;html lang="en"&gt;
@@ -132,15 +131,15 @@
 `.trim();
 
     let index = 0;
-    const typingSpeed = 15; // タイピング速度設定
+    const typingSpeed = 15; // タイピング速度
 
     // 構文ハイライト関数
     function syntaxHighlight(code) {
       return code
         .replace(/&lt;([\/]?[a-zA-Z0-9]+)/g, `<span class="tag">&lt;$1</span>`) // HTMLタグを赤色表示
-        .replace(/(\b[a-z\-]+)(=)/g, `<span class="attribute">$1</span>$2`) // 属性をオレンジ表示
-        .replace(/"([^"]*)"/g, `<span class="string">"$1"</span>`) // 文字列を緑表示
-        .replace(/\b(const|let|function|return|console|log)\b/g, `<span class="keyword">$1</span>`); // キーワードを紫表示
+        .replace(/(\b[a-z\-]+)(=)/g, `<span class="attribute">$1</span>$2`) // 属性をオレンジ色表示
+        .replace(/"([^"]*)"/g, `<span class="string">"$1"</span>`) // 文字列を緑色表示
+        .replace(/\b(const|let|function|return|console|log)\b/g, `<span class="keyword">$1</span>`); // キーワードを紫色表示
     }
 
     function typeCode() {
@@ -158,7 +157,7 @@
     }
 
     function showMessage() {
-      messageElement.style.display = 'block'; // メッセージ表示
+      messageElement.style.display = 'block'; // メッセージを表示
     }
 
     typeCode();
