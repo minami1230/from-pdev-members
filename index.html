@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Farewell Message</title>
-  <!-- おしゃれなフォント -->
+  <!-- おしゃれな日本語フォント -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background-color: #1e1e1e;
+      background-color: #1e1e1e; /* 背景を少し明るく調整 */
       font-family: 'Noto Sans JP', sans-serif;
       display: flex;
       align-items: flex-start;
@@ -23,11 +23,10 @@
     #code {
       position: absolute;
       top: 10px;
-      left: 10px;
+      left: 20px;
       white-space: pre-wrap;
       font-size: 14px;
       line-height: 1.5;
-      color: #ffffff; /* デフォルトテキスト色 */
     }
 
     #message {
@@ -40,7 +39,7 @@
       color: white;
       font-size: 2rem;
       line-height: 2.5rem;
-      animation: zoomIn 1.5s ease-in-out forwards, fadeIn 1.5s ease-in-out forwards;
+      animation: smoothFadeIn 2s ease-in-out forwards;
     }
 
     /* 構文ハイライトのスタイル */
@@ -49,32 +48,36 @@
     }
 
     .attribute {
-      color: orange; /* lang属性など */
+      color: orange; /* 属性 */
     }
 
     .string {
-      color: green; /* "文字列" */
+      color: #27c627; /* 明るい緑 */
     }
 
     .keyword {
-      color: purple; /* const, function, returnなど */
+      color: #9b59b6; /* 明るい紫 */
     }
 
-    @keyframes fadeIn {
-      from {
+    @keyframes smoothFadeIn {
+      0% {
         opacity: 0;
+        transform: scale(0.8);
       }
-      to {
+      100% {
         opacity: 1;
+        transform: scale(1);
       }
     }
 
-    @keyframes zoomIn {
-      from {
-        transform: translate(-50%, -50%) scale(0.5);
+    @keyframes smoothFadeOut {
+      0% {
+        opacity: 1;
+        transform: translateY(0px);
       }
-      to {
-        transform: translate(-50%, -50%) scale(1);
+      100% {
+        opacity: 0;
+        transform: translateY(-20px);
       }
     }
   </style>
@@ -87,7 +90,7 @@
     const codeElement = document.getElementById("code");
     const messageElement = document.getElementById("message");
 
-    // タイピングで表示する内容（エスケープ処理後）
+    // タイピングで表示する内容
     const htmlCode = `
 &lt;!DOCTYPE html&gt;
 &lt;html lang="en"&gt;
@@ -123,7 +126,7 @@
 `.trim();
 
     let index = 0;
-    const typingSpeed = 10;
+    const typingSpeed = 15; // タイピング速度を少し遅く設定
 
     // 構文ハイライト関数
     function syntaxHighlight(code) {
@@ -131,31 +134,30 @@
         .replace(/&lt;([\/]?[a-zA-Z0-9]+)/g, `<span class="tag">&lt;$1</span>`) // HTMLタグを赤色に変更
         .replace(/([a-z\-]+)(=)/g, `<span class="attribute">$1</span>$2`) // 属性名をオレンジ色に変更
         .replace(/"([^"]*)"/g, `<span class="string">"$1"</span>`) // 文字列を緑色に変更
-        .replace(/\b(const|let|function|return|console|log)\b/g, `<span class="keyword">$1</span>`); // キーワードを紫色に変更
+        .replace(/\b(const|let|function|return|console|log)\b/g, `<span class="keyword">$1</span>`); // キーワードを明るい紫に変更
     }
 
     // タイピングアニメーション
     function typeCode() {
       if (index <= htmlCode.length) {
-        const currentCode = htmlCode.slice(0, index); // タイピング進行部分取得
-        codeElement.innerHTML = syntaxHighlight(currentCode); // 構文ハイライトを適用
+        const currentCode = htmlCode.slice(0, index);
+        codeElement.innerHTML = syntaxHighlight(currentCode); // 構文ハイライト適用
         index++;
         if (index === htmlCode.length) {
-          setTimeout(() => codeElement.style.opacity = 0, 1000); // フェードアウト
-          setTimeout(showMessage, 2000); // 最終メッセージ表示
+          codeElement.style.animation = 'smoothFadeOut 1.5s ease-in-out forwards'; // フェードアウトアニメーションを適用
+          setTimeout(showMessage, 2000); // メッセージ表示
         } else {
-          setTimeout(typeCode, typingSpeed); // タイピング速度
+          setTimeout(typeCode, typingSpeed); // タイピング速度設定
         }
       }
     }
 
     // メッセージ表示
     function showMessage() {
-      codeElement.style.display = "none"; // コーディング部分非表示
-      messageElement.style.display = "block"; // メッセージを中央に表示
+      messageElement.style.display = "block"; // メッセージ表示
     }
 
-    // タイピングアニメーションを開始
+    // タイピングアニメーション開始
     typeCode();
   </script>
 </body>
