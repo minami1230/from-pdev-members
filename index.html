@@ -8,21 +8,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
+    /* 全体設定 */
     body {
       margin: 0;
       padding: 0;
       background-color: #1e1e1e;
       font-family: 'Noto Sans JP', sans-serif;
-      display: flex;
       height: 100vh;
-      align-items: center;
+      display: flex;
       justify-content: center;
+      align-items: center;
+      color: #d4d4d4;
     }
 
-    /* コーディング部分（タイピング表示） */
+    /* タイピングアニメーション部分 */
     #code {
       position: absolute;
-      top: 20px;
+      top: 10px;
       left: 20px;
       white-space: pre-wrap;
       font-size: 14px;
@@ -30,80 +32,32 @@
       color: #ffffff;
     }
 
-    /* 最後のメッセージ部分 */
-    #message {
-      display: none;
-      position: fixed; /* ビューポート全体で中央表示 */
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: white;
-      font-size: 1.8rem;
-      line-height: 2.5rem;
-      text-align: center;
-      width: 90%;
-      animation: fadeIn 1.5s ease-in-out forwards;
-    }
-
-    #message p {
-      margin: 0; /* 段落の余白を制御 */
-    }
-
     /* 構文ハイライトスタイル */
     .tag {
-      color: red; /* HTMLタグ */
+      color: red; /* HTMLタグ部分を赤色に設定 */
     }
 
     .attribute {
-      color: orange; /* 属性名 */
+      color: orange; /* 属性名部分をオレンジ色に設定 */
     }
 
     .string {
-      color: #27c627; /* 緑 */
+      color: #27c627; /* 緑色を文字列に適用 */
     }
 
     .keyword {
-      color: #9b59b6; /* 紫 */
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0px);
-      }
-    }
-
-    @keyframes fadeOut {
-      from {
-        opacity: 1;
-        transform: translateY(0px);
-      }
-      to {
-        opacity: 0;
-        transform: translateY(-30px);
-      }
+      color: #9b59b6; /* 紫色をキーワードに適用 */
     }
   </style>
 </head>
 <body>
-  <!-- タイピング表示部分 -->
+  <!-- コード表示部分 -->
   <div id="code"></div>
 
-  <!-- 最後のメッセージ部分 -->
-  <div id="message">
-    <p>今までpdevを引っ張ってくださりありがとうございました！</p>
-    <p>pdev一同成長した姿を見せられるよう頑張ります！</p>
-  </div>
-
   <script>
-    const codeElement = document.getElementById('code');
-    const messageElement = document.getElementById('message');
+    const codeElement = document.getElementById('code'); // タイピングアニメーション部分
 
-    // 表示するコード内容
+    // 表示するコード内容（エスケープ済み）
     const htmlCode = `
 &lt;!DOCTYPE html&gt;
 &lt;html lang="en"&gt;
@@ -121,55 +75,40 @@
 &lt;/head&gt;
 &lt;body&gt;
   &lt;script&gt;
-    const team = "Not as pdev anymore, but always striving together as teammates.";
-    const gratitude = "Thank you for your dedication and for leading us forward.";
-    const commitment = "We commit ourselves to growing and reaching new heights.";
-
-    function generateFarewellMessage(team, gratitude, commitment) {
-      return \`\${team}\\n\${gratitude}\\n\${commitment}\`;
-    }
-
-    const finalMessage = generateFarewellMessage(team, gratitude, commitment);
-    console.log(finalMessage);
+    const farewellMessage = "Thank you for supporting pdev!";
+    console.log(farewellMessage);
   &lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 `.trim();
 
     let index = 0;
-    const typingSpeed = 15;
+    const typingSpeed = 15; // タイピング速度設定
 
+    // 構文ハイライト関数
     function syntaxHighlight(code) {
       return code
-        // タグ（赤）
-        .replace(/&lt;([\/]?[a-zA-Z]+)/g, `<span class="tag">&lt;$1</span>`)
-        // 属性名（オレンジ）
-        .replace(/([a-z\-]+)(=)/g, `<span class="attribute">$1</span>$2`)
-        // 文字列（緑）
-        .replace(/"([^"]*)"/g, `<span class="string">"$1"</span>`)
-        // キーワード（紫）
+        // 1. HTMLタグ部分を赤色に変更
+        .replace(/&lt;([\/]?[a-zA-Z]+)/g, `<span class="tag">&lt;$1</span>`) // タグ部分を優先的に処理
+        // 2. 属性名部分をオレンジ色に変更
+        .replace(/([a-z\-]+)(=)/g, `<span class="attribute">$1</span>$2`) // 属性部分をタグ処理後に適用
+        // 3. 文字列部分を緑色に変更
+        .replace(/"([^"]*)"/g, `<span class="string">"$1"</span>`) // 属性値や文字列部分を緑色
+        // 4. JavaScriptキーワード部分を紫色に変更
         .replace(/\b(const|let|function|return|console|log)\b/g, `<span class="keyword">$1</span>`);
     }
 
+    // タイピングアニメーション関数
     function typeCode() {
       if (index <= htmlCode.length) {
-        const currentCode = htmlCode.slice(0, index);
-        codeElement.innerHTML = syntaxHighlight(currentCode);
+        const currentCode = htmlCode.slice(0, index); // 現在までのコードを取得
+        codeElement.innerHTML = syntaxHighlight(currentCode); // 構文ハイライト適用
         index++;
-        if (index === htmlCode.length) { // タイピング終了後すぐにフェードアウト
-          codeElement.style.animation = 'fadeOut 1.5s ease-in-out forwards';
-          setTimeout(() => showMessage(), 1500);
-        } else {
-          setTimeout(typeCode, typingSpeed); // タイピング速度適用
-        }
+        setTimeout(typeCode, typingSpeed); // タイピング速度を適用
       }
     }
 
-    function showMessage() {
-      messageElement.style.display = 'block';
-    }
-
-    typeCode(); // タイピングアニメーション開始
+    typeCode(); // タイピングアニメーションの実行
   </script>
 </body>
 </html>
