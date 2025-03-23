@@ -12,8 +12,8 @@
       background-color: #1e1e1e;
       font-family: 'Consolas', 'Courier New', monospace;
       display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
+      align-items: center;
+      justify-content: center;
       height: 100vh;
       color: #d4d4d4;
     }
@@ -21,10 +21,10 @@
     #code {
       padding: 20px;
       white-space: pre-wrap;
-      font-size: 14px; /* 文字サイズ調整 */
+      font-size: 14px;
       line-height: 1.5;
-      opacity: 1; /* 最初は完全表示 */
-      transition: opacity 2s ease-in; /* フェードアウトアニメーション設定 */
+      opacity: 1;
+      transition: opacity 3s ease-in-out;
     }
 
     #message {
@@ -33,87 +33,106 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
-      animation: fadeIn 1s ease-in forwards; /* フェードインアニメーション設定 */
-      color: white;
-      font-size: 2rem;
+      transform: translate(-50%, -50%) scale(0.8);
+      animation: fadeIn 1.5s ease-in-out forwards, pulse 3s infinite;
+      color: #36d4ff;
+      font-size: 2.5rem;
     }
 
     @keyframes fadeIn {
       from {
         opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
       }
       to {
         opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.05);
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
       }
     }
   </style>
 </head>
 <body>
   <div id="code"></div>
-  <div id="message">今までpdevを引っ張ってくださりありがとうございました！<br>pdev一同成長した姿を見せられるよう頑張ります！</div>
+  <div id="message">
+    <h1>Thank you for everything you've done for pdev!</h1>
+    <p>We promise to keep growing and aim higher!</p>
+  </div>
 
   <script>
     const codeElement = document.getElementById("code");
     const messageElement = document.getElementById("message");
 
-    // 表示するコード
+    // コーディング内容を作成するコード
     const htmlCode = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>pdev Message of Departure</title>
+  <title>pdev Message</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       background-color: #1e1e1e;
       color: white;
-      font-family: 'Consolas', 'Courier New', monospace;
-      height: 100vh;
     }
     h1 {
-      font-size: 2rem;
+      font-size: 2.5rem;
+      text-align: center;
       color: #36d4ff;
+    }
+    p {
+      font-size: 1.5rem;
+      color: #ffffff;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>今までpdevを引っ張ってくださりありがとうございました！</h1>
+  <h1>Thank you for everything you've done for pdev!</h1>
+  <p>We promise to keep growing and aim higher!</p>
 </body>
 </html>
-`.trim();
+    `.trim();
 
     // タイピング速度設定
     let index = 0;
-    const typingSpeed = 30; // タイピング速度
+    const typingSpeed = 20; // タイピング速度
 
     // タイピングアニメーション機能
     function typeCode() {
       if (index < htmlCode.length) {
         codeElement.innerHTML += htmlCode[index] === '\n' ? '<br>' : htmlCode[index];
         index++;
-        if (index === htmlCode.length - 50) { // 最後の50文字前にフェードアウト開始準備
-          setTimeout(() => codeElement.style.opacity = 0, 2000); // フェードアウト開始（2秒後）
-          setTimeout(showMessage, 4000); // フェードアウト後メッセージ表示（4秒後）
+        // 最後の部分でフェードアウト開始とメッセージ表示準備
+        if (index === htmlCode.length - 50) {
+          setTimeout(() => codeElement.style.opacity = 0, 1000); // フェードアウト開始
+          setTimeout(showMessage, 3200); // メッセージ表示タイミング
         } else {
           setTimeout(typeCode, typingSpeed); // 継続してタイピングアニメーション
         }
       }
     }
 
-    // メッセージをフェードインで表示する機能
+    // メッセージをフェードインで表示
     function showMessage() {
       codeElement.style.display = "none"; // コードを隠す
       messageElement.style.display = "block"; // メッセージを表示
     }
 
-    // すべて開始
+    // タイピングアニメーション開始
     typeCode();
   </script>
 </body>
