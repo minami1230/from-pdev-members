@@ -21,10 +21,10 @@
     #code {
       padding: 20px;
       white-space: pre-wrap;
-      font-size: 14px; /* 文字サイズ設定 */
+      font-size: 14px; /* 文字サイズ調整 */
       line-height: 1.5;
-      opacity: 1;
-      animation: fadeOut 2s ease-in forwards; /* フェードアウトアニメーション */
+      opacity: 1; /* 最初は完全表示 */
+      transition: opacity 2s ease-in; /* フェードアウトアニメーション設定 */
     }
 
     #message {
@@ -34,25 +34,16 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      animation: fadeIn 2s ease-in forwards; /* フェードイン */
+      animation: fadeIn 1s ease-in forwards; /* フェードインアニメーション設定 */
       color: white;
       font-size: 2rem;
     }
 
-    @keyframes fadeOut {
-      0% {
-        opacity: 1;
-      }
-      100% {
-        opacity: 0;
-      }
-    }
-
     @keyframes fadeIn {
-      0% {
+      from {
         opacity: 0;
       }
-      100% {
+      to {
         opacity: 1;
       }
     }
@@ -66,7 +57,7 @@
     const codeElement = document.getElementById("code");
     const messageElement = document.getElementById("message");
 
-    // 表示するコードの内容
+    // 表示するコード
     const htmlCode = `
 <!DOCTYPE html>
 <html lang="en">
@@ -83,7 +74,7 @@
       justify-content: center;
       background-color: #1e1e1e;
       color: white;
-      font-family: 'Consolas', 'Courier New', monospace';
+      font-family: 'Consolas', 'Courier New', monospace;
       height: 100vh;
     }
     h1 {
@@ -100,29 +91,29 @@
 
     // タイピング速度設定
     let index = 0;
-    const typingSpeed = 500; // 修正: タイピングスピードを遅く（0.5秒）
+    const typingSpeed = 50; // タイピング速度
 
-    // タイピングアニメーション
+    // タイピングアニメーション機能
     function typeCode() {
       if (index < htmlCode.length) {
         codeElement.innerHTML += htmlCode[index] === '\n' ? '<br>' : htmlCode[index];
         index++;
-        setTimeout(typeCode, typingSpeed); // 指定スピードで次の文字を表示
-        if (index === htmlCode.length - 20) { // タイピング終了の 2 秒前からフェードアウト開始
-          codeElement.style.animation = "fadeOut 2s ease-in forwards";
+        if (index === htmlCode.length - 50) { // 最後の50文字前にフェードアウト開始準備
+          setTimeout(() => codeElement.style.opacity = 0, 2000); // フェードアウト開始（2秒後）
+          setTimeout(showMessage, 4000); // フェードアウト後メッセージ表示（4秒後）
+        } else {
+          setTimeout(typeCode, typingSpeed); // 継続してタイピングアニメーション
         }
-      } else {
-        showMessage(); // タイピング終了後メッセージ表示
       }
     }
 
-    // メッセージを表示する関数
+    // メッセージをフェードインで表示する機能
     function showMessage() {
-      codeElement.style.display = "none"; // コードを非表示
-      messageElement.style.display = "block"; // メッセージを中央に表示
+      codeElement.style.display = "none"; // コードを隠す
+      messageElement.style.display = "block"; // メッセージを表示
     }
 
-    // タイピングアニメーション開始
+    // すべて開始
     typeCode();
   </script>
 </body>
