@@ -13,16 +13,16 @@
       padding: 0;
       background-color: #1e1e1e;
       font-family: 'Noto Sans JP', sans-serif;
-      height: 100vh;
       display: flex;
-      justify-content: center;
+      height: 100vh;
       align-items: center;
+      justify-content: center;
     }
 
-    /* タイピングアニメーションのコード部分 */
+    /* コーディング部分（タイピング表示） */
     #code {
       position: absolute;
-      top: 10px;
+      top: 20px;
       left: 20px;
       white-space: pre-wrap;
       font-size: 14px;
@@ -33,17 +33,23 @@
     /* 最後のメッセージ部分 */
     #message {
       display: none;
-      position: absolute; /* 座標固定 */
+      position: fixed; /* ビューポート全体で中央表示 */
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       color: white;
-      font-size: 1.7rem;
-      line-height: 2rem;
-      text-align: center; /* メッセージを中央揃え */
-      width: 90%; /* 横幅を全体に収める */
+      font-size: 1.8rem;
+      line-height: 2.5rem;
+      text-align: center;
+      width: 90%;
+      animation: fadeIn 1.5s ease-in-out forwards;
     }
 
+    #message p {
+      margin: 0; /* 段落の余白を制御 */
+    }
+
+    /* 構文ハイライトスタイル */
     .tag {
       color: red; /* HTMLタグ */
     }
@@ -59,21 +65,43 @@
     .keyword {
       color: #9b59b6; /* 紫 */
     }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0px);
+      }
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+        transform: translateY(0px);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+    }
   </style>
 </head>
 <body>
   <!-- タイピング表示部分 -->
   <div id="code"></div>
 
-  <!-- 最後のメッセージ -->
+  <!-- 最後のメッセージ部分 -->
   <div id="message">
     <p>今までpdevを引っ張ってくださりありがとうございました！</p>
     <p>pdev一同成長した姿を見せられるよう頑張ります！</p>
   </div>
 
   <script>
-    const codeElement = document.getElementById('code'); // コーディング表示部分
-    const messageElement = document.getElementById('message'); // メッセージ表示部分
+    const codeElement = document.getElementById('code');
+    const messageElement = document.getElementById('message');
 
     // 表示するコード内容
     const htmlCode = `
@@ -98,7 +126,7 @@
     const commitment = "We commit ourselves to growing and reaching new heights.";
 
     function generateFarewellMessage(team, gratitude, commitment) {
-      return \`${team}\\n${gratitude}\\n${commitment}\`;
+      return \`\${team}\\n\${gratitude}\\n\${commitment}\`;
     }
 
     const finalMessage = generateFarewellMessage(team, gratitude, commitment);
@@ -109,38 +137,39 @@
 `.trim();
 
     let index = 0;
-    const typingSpeed = 15; // タイピング速度設定
+    const typingSpeed = 15;
 
-    // 構文ハイライト処理
     function syntaxHighlight(code) {
       return code
-        // 1. HTMLタグ処理（赤色）
-        .replace(/&lt;([\/]?[a-zA-Z0-9]+)/g, `<span class="tag">&lt;$1</span>`)
-        // 2. 属性名処理（オレンジ色）
-        .replace(/(\b[a-z\-]+)(=)/g, `<span class="attribute">$1</span>$2`)
-        // 3. 文字列処理（緑色）
+        // タグ（赤）
+        .replace(/&lt;([\/]?[a-zA-Z]+)/g, `<span class="tag">&lt;$1</span>`)
+        // 属性名（オレンジ）
+        .replace(/([a-z\-]+)(=)/g, `<span class="attribute">$1</span>$2`)
+        // 文字列（緑）
         .replace(/"([^"]*)"/g, `<span class="string">"$1"</span>`)
-        // 4. キーワード処理（紫色）
+        // キーワード（紫）
         .replace(/\b(const|let|function|return|console|log)\b/g, `<span class="keyword">$1</span>`);
     }
 
-    // タイピングアニメーション
     function typeCode() {
       if (index <= htmlCode.length) {
         const currentCode = htmlCode.slice(0, index);
         codeElement.innerHTML = syntaxHighlight(currentCode);
         index++;
-        if (index === htmlCode.length) { // フェードアウト＆メッセージ表示切り替え
-          codeElement.style.opacity = '0';
-          messageElement.style.display = 'block'; // メッセージを中央に表示
+        if (index === htmlCode.length) { // タイピング終了後すぐにフェードアウト
+          codeElement.style.animation = 'fadeOut 1.5s ease-in-out forwards';
+          setTimeout(() => showMessage(), 1500);
         } else {
           setTimeout(typeCode, typingSpeed); // タイピング速度適用
         }
       }
     }
 
-    // アニメーション開始
-    typeCode();
+    function showMessage() {
+      messageElement.style.display = 'block';
+    }
+
+    typeCode(); // タイピングアニメーション開始
   </script>
 </body>
 </html>
