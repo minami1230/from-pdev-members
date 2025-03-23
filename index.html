@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>pdev Departure Message</title>
-  <!-- おしゃれなフォントを適用 -->
+  <title>Farewell Message</title>
+  <!-- おしゃれな日本語フォント -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -12,37 +12,37 @@
       padding: 0;
       overflow: hidden;
       background-color: #1e1e1e;
-      font-family: 'Noto Sans JP', sans-serif; /* おしゃれなフォント */
+      font-family: 'Noto Sans JP', sans-serif;
       display: flex;
-      align-items: flex-start; /* 左上に配置 */
+      align-items: flex-start;
       justify-content: flex-start;
       height: 100vh;
       color: #d4d4d4;
     }
 
     #code {
-      position: absolute; /* 画面左上に配置 */
+      position: absolute;
       top: 10px;
       left: 10px;
-      padding: 20px;
       white-space: pre-wrap;
       font-size: 14px;
       line-height: 1.5;
       opacity: 1;
-      transition: opacity 3s ease-in-out; /* フェードアウト */
+      transition: opacity 2s ease-in-out; /* フェードアウト */
     }
 
     #message {
       display: none;
-      text-align: center;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      animation: fadeIn 1.5s ease-in-out forwards;
-      color: white; /* メッセージの色を白に */
-      font-size: 2.5rem;
-      width: 100%; /* 横幅一杯 */
+      text-align: center;
+      color: white;
+      font-size: 2rem;
+      line-height: 2.5rem;
+      animation: zoomIn 1.5s ease-in-out forwards, fadeIn 1.5s ease-in-out forwards;
+      max-width: 90%; /* 横幅を調整 */
     }
 
     @keyframes fadeIn {
@@ -53,87 +53,71 @@
         opacity: 1;
       }
     }
+
+    @keyframes zoomIn {
+      from {
+        transform: translate(-50%, -50%) scale(0.5);
+      }
+      to {
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
   </style>
 </head>
 <body>
   <div id="code"></div>
-  <div id="message">今までpdevを引っ張ってくださりありがとうございました。pdev一同さらなる成長を目指して頑張ります！</div>
+  <div id="message">今までpdevを引っ張ってくださりありがとうございました！<br>pdev一同成長した姿を見せられるよう頑張ります！</div>
 
   <script>
     const codeElement = document.getElementById("code");
     const messageElement = document.getElementById("message");
 
-    // タイピングで表示されるコード内容
+    // タイピングで表示される英語のコーディング内容
     const htmlCode = `
 /**
- * メッセージ生成コード
+ * Farewell Message Generator
  */
 
-// メッセージの内容
-const messageHeader = "今までpdevを引っ張ってくださりありがとうございました。";
-const messageBody = "pdev一同さらなる成長を目指して頑張ります！";
+// Define the team philosophy
+const team = "Not as pdev anymore, but always striving together as teammates.";
 
-// メッセージを生成する関数
-function generateMessage(header, body) {
-  return \`
-<h1>\${header}</h1>
-<p>\${body}</p>
-\`;
+// Express gratitude for leadership
+const gratitude = "Thank you for your dedication and for leading us forward.";
+
+// Promise for continuous growth
+const commitment = "We commit ourselves to growing and reaching new heights.";
+
+// Generate the farewell message
+function generateFarewellMessage(team, gratitude, commitment) {
+  return \`\${team}\n\${gratitude}\n\${commitment}\`;
 }
 
-// HTML出力用のコード構造
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>pdev Departure</title>
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #1e1e1e;
-      color: white;
-      font-family: 'Noto Sans JP', sans-serif;
-      height: 100vh;
-    }
-    h1 {
-      font-size: 2.5rem;
-      text-align: center;
-    }
-    p {
-      font-size: 1.5rem;
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
-  \${generateMessage(messageHeader, messageBody)}
-</body>
-</html>
+// Create and log the final message
+const finalMessage = generateFarewellMessage(team, gratitude, commitment);
+console.log(finalMessage);
 `.trim();
 
-    // タイピング速度
     let index = 0;
-    const typingSpeed = 20; // 速くタイピング速度を設定
+    const typingSpeed = 20;
 
-    // タイピングアニメーション機能
+    // タイピングアニメーション: コーディングを段階的に表示
     function typeCode() {
       if (index < htmlCode.length) {
         codeElement.innerHTML += htmlCode[index] === '\n' ? '<br>' : htmlCode[index];
         index++;
-        if (index === htmlCode.length - 50) { // フェードアウト開始準備
-          setTimeout(() => codeElement.style.opacity = 0, 1000); // コードフェードアウト
-          setTimeout(showMessage, 3200); // メッセージを表示
+        if (index === htmlCode.length - 50) {
+          setTimeout(() => codeElement.style.opacity = 0, 1000); // コーディングをフェードアウト
+          setTimeout(showMessage, 2000); // メッセージを表示
         } else {
           setTimeout(typeCode, typingSpeed); // 継続してタイピングアニメーション
         }
       }
     }
 
-    // メッセージをフェードインで表示する機能
+    // メッセージをフェードインして表示
     function showMessage() {
-      codeElement.style.display = "none"; // コードを隠す
-      messageElement.style.display = "block"; // メッセージを表示
+      codeElement.style.display = "none"; // コーディングを非表示
+      messageElement.style.display = "block"; // 日本語メッセージを表示
     }
 
     // タイピングアニメーション開始
