@@ -11,13 +11,12 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background-color: #1e1e1e; /* 背景を少し明るく調整 */
+      background-color: #1e1e1e;
       font-family: 'Noto Sans JP', sans-serif;
       display: flex;
       align-items: flex-start;
       justify-content: flex-start;
       height: 100vh;
-      color: #d4d4d4;
     }
 
     #code {
@@ -37,9 +36,10 @@
       transform: translate(-50%, -50%);
       text-align: center;
       color: white;
-      font-size: 2rem;
-      line-height: 2.5rem;
-      animation: smoothFadeIn 2s ease-in-out forwards;
+      font-size: 1.5rem;
+      line-height: 2rem;
+      width: 90%; /* 横幅いっぱいで表示 */
+      animation: smoothFadeIn 1.5s ease-in-out forwards;
     }
 
     /* 構文ハイライトのスタイル */
@@ -48,7 +48,7 @@
     }
 
     .attribute {
-      color: orange; /* 属性 */
+      color: orange; /* 属性名 */
     }
 
     .string {
@@ -62,18 +62,18 @@
     @keyframes smoothFadeIn {
       0% {
         opacity: 0;
-        transform: scale(0.8);
+        transform: translateY(20px);
       }
       100% {
         opacity: 1;
-        transform: scale(1);
+        transform: translateY(0);
       }
     }
 
     @keyframes smoothFadeOut {
       0% {
         opacity: 1;
-        transform: translateY(0px);
+        transform: translateY(0);
       }
       100% {
         opacity: 0;
@@ -84,13 +84,12 @@
 </head>
 <body>
   <div id="code"></div>
-  <div id="message">今までpdevを引っ張ってくださりありがとうございました！<br>pdev一同成長した姿を見せられるよう頑張ります！</div>
+  <div id="message">今までpdevを引っ張ってくださりありがとうございました！pdev一同成長した姿を見せられるよう頑張ります！</div>
 
   <script>
     const codeElement = document.getElementById("code");
     const messageElement = document.getElementById("message");
 
-    // タイピングで表示する内容
     const htmlCode = `
 &lt;!DOCTYPE html&gt;
 &lt;html lang="en"&gt;
@@ -126,7 +125,7 @@
 `.trim();
 
     let index = 0;
-    const typingSpeed = 15; // タイピング速度を少し遅く設定
+    const typingSpeed = 15; // タイピング速度を少し遅くする
 
     // 構文ハイライト関数
     function syntaxHighlight(code) {
@@ -134,7 +133,7 @@
         .replace(/&lt;([\/]?[a-zA-Z0-9]+)/g, `<span class="tag">&lt;$1</span>`) // HTMLタグを赤色に変更
         .replace(/([a-z\-]+)(=)/g, `<span class="attribute">$1</span>$2`) // 属性名をオレンジ色に変更
         .replace(/"([^"]*)"/g, `<span class="string">"$1"</span>`) // 文字列を緑色に変更
-        .replace(/\b(const|let|function|return|console|log)\b/g, `<span class="keyword">$1</span>`); // キーワードを明るい紫に変更
+        .replace(/\b(const|let|function|return|console|log)\b/g, `<span class="keyword">$1</span>`); // キーワードを紫色に変更
     }
 
     // タイピングアニメーション
@@ -143,9 +142,9 @@
         const currentCode = htmlCode.slice(0, index);
         codeElement.innerHTML = syntaxHighlight(currentCode); // 構文ハイライト適用
         index++;
-        if (index === htmlCode.length) {
-          codeElement.style.animation = 'smoothFadeOut 1.5s ease-in-out forwards'; // フェードアウトアニメーションを適用
-          setTimeout(showMessage, 2000); // メッセージ表示
+        if (index === htmlCode.length - 50) { // タイピング終了前にフェードアウト開始
+          codeElement.style.animation = 'smoothFadeOut 2s ease-in-out forwards'; // フェードアウトアニメーション
+          setTimeout(showMessage, 1500); // メッセージ表示の間を短縮
         } else {
           setTimeout(typeCode, typingSpeed); // タイピング速度設定
         }
@@ -154,7 +153,7 @@
 
     // メッセージ表示
     function showMessage() {
-      messageElement.style.display = "block"; // メッセージ表示
+      messageElement.style.display = "block"; // メッセージを表示
     }
 
     // タイピングアニメーション開始
