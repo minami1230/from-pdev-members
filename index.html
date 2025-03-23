@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Farewell Message</title>
-  <!-- おしゃれな日本語フォント -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -14,9 +13,10 @@
       background-color: #1e1e1e;
       font-family: 'Noto Sans JP', sans-serif;
       display: flex;
-      justify-content: center;
-      align-items: center;
+      align-items: flex-start;
+      justify-content: flex-start;
       height: 100vh;
+      color: #d4d4d4;
     }
 
     #code {
@@ -26,6 +26,7 @@
       white-space: pre-wrap;
       font-size: 14px;
       line-height: 1.5;
+      color: #ffffff; /* デフォルトテキスト色 */
     }
 
     #message {
@@ -58,10 +59,6 @@
       color: purple; /* const, functionなどキーワード */
     }
 
-    .default {
-      color: white; /* デフォルトテキスト */
-    }
-
     @keyframes fadeIn {
       from {
         opacity: 0;
@@ -89,7 +86,7 @@
     const codeElement = document.getElementById("code");
     const messageElement = document.getElementById("message");
 
-    // タイピングされる内容（色分けを適用する）
+    // タイピングで表示する内容
     const htmlCode = `
 <!DOCTYPE html>
 <html lang="en">
@@ -125,27 +122,28 @@
 `.trim();
 
     let index = 0;
-    const typingSpeed = 10;
+    const typingSpeed = 20;
 
-    // 構文ハイライト関数 (色分けを適用)
+    // 構文ハイライト関数
     function syntaxHighlight(code) {
       return code
-        .replace(/(&lt;[\/]?[a-zA-Z0-9]+)/g, `<span class="tag">$1</span>`) // HTMLタグ (<html>, </body> など)
-        .replace(/([a-z\-]+)(=)/g, `<span class="attribute">$1</span>$2`) // 属性名 (lang, charsetなど)
-        .replace(/"([^"]*)"/g, `<span class="string">"$1"</span>`) // 文字列 ("文字列" 部分)
-        .replace(/\b(const|let|function|return|console|log)\b/g, `<span class="keyword">$1</span>`); // キーワード (const, functionなど)
+        .replace(/<([\/]?[a-zA-Z0-9]+)/g, `<span class="tag">&lt;$1</span>`) // HTMLタグ (<html>, </body>)
+        .replace(/([a-z-]+)(=)/g, `<span class="attribute">$1</span>$2`) // 属性名 (lang, charset)
+        .replace(/"([^"]*)"/g, `<span class="string">"$1"</span>`) // 文字列 ("...")
+        .replace(/\b(const|let|function|return|console|log)\b/g, `<span class="keyword">$1</span>`); // キーワード
     }
 
     // タイピングアニメーション
     function typeCode() {
       if (index < htmlCode.length) {
-        codeElement.innerHTML = syntaxHighlight(htmlCode.slice(0, index + 1)); // 色分けを適用しながら表示
+        const currentCode = htmlCode.slice(0, index); // 現在の部分を取得
+        codeElement.innerHTML = syntaxHighlight(currentCode); // 構文ハイライト適用
         index++;
         if (index === htmlCode.length - 50) {
-          setTimeout(() => codeElement.style.opacity = 0, 1000); // コーディング部分をフェードアウト
-          setTimeout(showMessage, 2000); // メッセージを表示
+          setTimeout(() => codeElement.style.opacity = 0, 1000); // フェードアウト
+          setTimeout(showMessage, 2000); // メッセージ表示
         } else {
-          setTimeout(typeCode, typingSpeed); // 継続してタイピングアニメーション
+          setTimeout(typeCode, typingSpeed);
         }
       }
     }
