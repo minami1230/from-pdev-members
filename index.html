@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>pdev Departure Message</title>
-  <!-- おしゃれなフォントを適用 -->
+  <title>Farewell Message</title>
+  <!-- おしゃれな日本語フォント -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -14,23 +14,18 @@
       background-color: #1e1e1e;
       font-family: 'Noto Sans JP', sans-serif;
       display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
+      justify-content: center;
+      align-items: center;
       height: 100vh;
-      color: #d4d4d4;
     }
 
     #code {
       position: absolute;
       top: 10px;
       left: 10px;
-      padding: 20px;
       white-space: pre-wrap;
       font-size: 14px;
       line-height: 1.5;
-      color: #d4d4d4;
-      opacity: 1;
-      transition: opacity 3s ease-in-out;
     }
 
     #message {
@@ -41,9 +36,30 @@
       transform: translate(-50%, -50%);
       text-align: center;
       color: white;
-      font-size: 1.5rem;
-      width: 90%; /* 横いっぱいに設定 */
-      animation: fadeIn 1.5s ease-in-out forwards;
+      font-size: 2rem;
+      line-height: 2.5rem;
+      animation: zoomIn 1.5s ease-in-out forwards, fadeIn 1.5s ease-in-out forwards;
+    }
+
+    /* 構文ハイライトのスタイル */
+    .tag {
+      color: red; /* HTMLタグ */
+    }
+
+    .attribute {
+      color: orange; /* lang属性などキー */
+    }
+
+    .string {
+      color: green; /* "文字列" */
+    }
+
+    .keyword {
+      color: purple; /* const, functionなどキーワード */
+    }
+
+    .default {
+      color: white; /* デフォルトテキスト */
     }
 
     @keyframes fadeIn {
@@ -54,82 +70,93 @@
         opacity: 1;
       }
     }
+
+    @keyframes zoomIn {
+      from {
+        transform: translate(-50%, -50%) scale(0.5);
+      }
+      to {
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
   </style>
 </head>
 <body>
   <div id="code"></div>
-  <div id="message">今までpdevを引っ張ってくださりありがとうございました。<br>一同さらなる成長を目指して頑張ります！</br></div>
+  <div id="message">今までpdevを引っ張ってくださりありがとうございました！<br>pdev一同成長した姿を見せられるよう頑張ります！</div>
 
   <script>
     const codeElement = document.getElementById("code");
     const messageElement = document.getElementById("message");
 
-    // 表示するコードの内容
+    // タイピングされる内容（色分けを適用する）
     const htmlCode = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>pdev Message of Departure</title>
+  <title>Farewell Message</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       background-color: #1e1e1e;
       color: white;
       font-family: 'Noto Sans JP', sans-serif;
-      height: 100vh;
-    }
-    h1 {
-      font-size: 2.5rem;
-      color: #ffffff;
     }
   </style>
 </head>
 <body>
-  <!-- メッセージを暗示する変数 -->
   <script>
-    const messageHeader = "今までpdevを引っ張ってくださりありがとうございました。";
-    const messageBody = "pdev一同さらなる成長を目指して頑張ります！";
-  </script>
+    const team = "Not as pdev anymore, but always striving together as teammates.";
+    const gratitude = "Thank you for your dedication and for leading us forward.";
+    const commitment = "We commit ourselves to growing and reaching new heights.";
 
-  <h1>今までpdevを引っ張ってくださりありがとうございました！</h1>
-  <script>
-    console.log(\`\${messageHeader} \${messageBody}\`);
+    function generateFarewellMessage(team, gratitude, commitment) {
+      return \`\${team}\\n\${gratitude}\\n\${commitment}\`;
+    }
+
+    const finalMessage = generateFarewellMessage(team, gratitude, commitment);
+    console.log(finalMessage);
   </script>
 </body>
 </html>
 `.trim();
 
-    // タイピング速度
     let index = 0;
-    const typingSpeed = 15; // タイピング速度設定
+    const typingSpeed = 10;
+
+    // 構文ハイライト関数 (色分けを適用)
+    function syntaxHighlight(code) {
+      return code
+        .replace(/(&lt;[\/]?[a-zA-Z0-9]+)/g, `<span class="tag">$1</span>`) // HTMLタグ (<html>, </body> など)
+        .replace(/([a-z\-]+)(=)/g, `<span class="attribute">$1</span>$2`) // 属性名 (lang, charsetなど)
+        .replace(/"([^"]*)"/g, `<span class="string">"$1"</span>`) // 文字列 ("文字列" 部分)
+        .replace(/\b(const|let|function|return|console|log)\b/g, `<span class="keyword">$1</span>`); // キーワード (const, functionなど)
+    }
 
     // タイピングアニメーション
     function typeCode() {
       if (index < htmlCode.length) {
-        codeElement.innerHTML += htmlCode[index] === '\n' ? '<br>' : htmlCode[index];
+        codeElement.innerHTML = syntaxHighlight(htmlCode.slice(0, index + 1)); // 色分けを適用しながら表示
         index++;
-        if (index === htmlCode.length - 50) { // フェードアウト開始セット
-          setTimeout(() => codeElement.style.opacity = 0, 1000); // フェードアウト
-          setTimeout(showMessage, 3200); // メッセージ表示切り替え
+        if (index === htmlCode.length - 50) {
+          setTimeout(() => codeElement.style.opacity = 0, 1000); // コーディング部分をフェードアウト
+          setTimeout(showMessage, 2000); // メッセージを表示
         } else {
-          setTimeout(typeCode, typingSpeed);
+          setTimeout(typeCode, typingSpeed); // 継続してタイピングアニメーション
         }
       }
     }
 
-    // メッセージを表示するフェード機能
+    // メッセージ表示
     function showMessage() {
       codeElement.style.display = "none";
       messageElement.style.display = "block";
     }
 
-    // タイピングアニメーションを開始
+    // アニメーション開始
     typeCode();
   </script>
 </body>
