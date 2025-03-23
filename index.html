@@ -27,6 +27,7 @@
       white-space: pre-wrap;
       font-size: 14px;
       line-height: 1.5;
+      color: #ffffff; /* デフォルトテキスト色 */
     }
 
     #message {
@@ -48,7 +49,7 @@
     }
 
     .attribute {
-      color: orange; /* langや属性名など */
+      color: orange; /* lang属性など */
     }
 
     .string {
@@ -57,6 +58,10 @@
 
     .keyword {
       color: purple; /* const, function, returnなど */
+    }
+
+    .default {
+      color: white; /* デフォルトテキスト */
     }
 
     @keyframes fadeIn {
@@ -86,7 +91,7 @@
     const codeElement = document.getElementById("code");
     const messageElement = document.getElementById("message");
 
-    // タイピング表示内容（色分け付き）
+    // 表示内容を保存する
     const htmlCode = `
 <!DOCTYPE html>
 <html lang="en">
@@ -122,39 +127,41 @@
 `.trim();
 
     let index = 0;
-    const typingSpeed = 10; // タイピング速度を速く設定
+    const typingSpeed = 10;
 
-    // 構文ハイライト処理
+    // 構文ハイライト関数
     function syntaxHighlight(code) {
       return code
-        .replace(/<([\/]?[a-zA-Z0-9]+)/g, `<span class="tag">&lt;$1</span>`) // HTMLタグ (<html>, </body>)
-        .replace(/([a-z-]+)(=)/g, `<span class="attribute">$1</span>$2`) // 属性名 (lang, charset)
-        .replace(/"([^"]*)"/g, `<span class="string">"$1"</span>`) // 文字列 ("...")
-        .replace(/\b(const|let|function|return|console|log)\b/g, `<span class="keyword">$1</span>`); // キーワード
+        .replace(/</g, "&lt;") // HTMLエスケープ: < を &lt; に変換
+        .replace(/>/g, "&gt;") // HTMLエスケープ: > を &gt; に変換
+        .replace(/&lt;([\/]?[a-zA-Z0-9]+)/g, `<span class="tag">&lt;$1</span>`) // HTMLタグを赤色に変更
+        .replace(/([a-z-]+)(=)/g, `<span class="attribute">$1</span>$2`) // 属性名をオレンジ色に変更
+        .replace(/"([^"]*)"/g, `<span class="string">"$1"</span>`) // 文字列を緑色に変更
+        .replace(/\b(const|let|function|return|console|log)\b/g, `<span class="keyword">$1</span>`); // キーワードを紫色に変更
     }
 
     // タイピングアニメーション
     function typeCode() {
       if (index <= htmlCode.length) {
         const currentCode = htmlCode.slice(0, index);
-        codeElement.innerHTML = syntaxHighlight(currentCode); // 構文ハイライトを適用
+        codeElement.innerHTML = syntaxHighlight(currentCode); // 文字列に構文ハイライトを適用
         index++;
         if (index === htmlCode.length) {
           setTimeout(() => codeElement.style.opacity = 0, 1000); // フェードアウト
           setTimeout(showMessage, 2000); // メッセージ表示
         } else {
-          setTimeout(typeCode, typingSpeed); // タイピング速度をタイマーに適用
+          setTimeout(typeCode, typingSpeed); // タイピング速度
         }
       }
     }
 
     // メッセージ表示
     function showMessage() {
-      codeElement.style.display = "none"; // コーディング部分を非表示
-      messageElement.style.display = "block"; // メッセージを画面中央に表示
+      codeElement.style.display = "none"; // コーディング内容非表示
+      messageElement.style.display = "block"; // メッセージを表示
     }
 
-    // アニメーション開始（タイピング）
+    // タイピングアニメーション開始
     typeCode();
   </script>
 </body>
